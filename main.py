@@ -55,7 +55,7 @@ class Main(QMainWindow, QWidget):
         self.setWindowTitle('DeskPyL - ERP Compliance Operative Control')
         self.setMinimumWidth(1000)
         self.setMinimumHeight(550)
-        self.showMaximized()
+        # self.showMaximized()
         # self.setWindowFlags(Qt.WindowType.WindowMaximizeButtonHint | Qt.WindowType.WindowMinimizeButtonHint)
 
         menubar = self.menuBar()
@@ -169,13 +169,13 @@ class Main(QMainWindow, QWidget):
 
         self.action_6_2 = QAction(QIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DesktopIcon)), '&Documentación', self)
         self.action_6_2.setShortcut('Ctrl+B')
-        self.action_6_2.setStatusTip('.')
+        self.action_6_2.setStatusTip('Ver documentación del proyecto - https://github.com/dgabrielsl/compliance_operative_control')
         self.action_6_2.triggered.connect(self.navigation)
         opt_menu_6.addAction(self.action_6_2)
 
         self.action_6_3 = QAction(QIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DesktopIcon)), '&Acerca De', self)
         self.action_6_3.setShortcut('Ctrl+A')
-        self.action_6_3.setStatusTip('.')
+        self.action_6_3.setStatusTip('Acerca de DeskPyL')
         self.action_6_3.triggered.connect(self.navigation)
         opt_menu_6.addAction(self.action_6_3)
 
@@ -547,6 +547,90 @@ class Main(QMainWindow, QWidget):
         self._ui_dataload.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         self.ui_dataload.setLayout(self._ui_dataload)
 
+        self.load_sysde_btn_search = QPushButton('+ SYSDE')
+        self.load_sysde_btn_search.clicked.connect(lambda:print(self.sender().text()))
+        self.load_sysde_btn_search.setFixedWidth(250)
+        self.load_sysde_btn_search.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        self.load_sysde_tagname = QLineEdit()
+        self.load_sysde_tagname.setPlaceholderText('Nombre de la etiqueta')
+
+        self.load_sysde_btn_save = QPushButton('Guardar')
+        self.load_sysde_btn_save.clicked.connect(lambda:print(self.sender().text()))
+        self.load_sysde_btn_save.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.load_sysde_btn_search)
+        hbox.addWidget(self.load_sysde_tagname)
+        hbox.addWidget(self.load_sysde_btn_save)
+
+        self._ui_dataload.addLayout(hbox)
+
+        self.load_hds_btn_search = QPushButton('+ Reporte de HDs')
+        self.load_hds_btn_search.clicked.connect(lambda:print(self.sender().text()))
+        self.load_hds_btn_search.setFixedWidth(250)
+        self.load_hds_btn_search.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        self.load_hds_tagname = QLineEdit()
+        self.load_hds_tagname.setPlaceholderText('Nombre de la etiqueta')
+
+        self.load_hds_btn_save = QPushButton('Guardar')
+        self.load_hds_btn_save.clicked.connect(lambda:print(self.sender().text()))
+        self.load_hds_btn_save.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.load_hds_btn_search)
+        hbox.addWidget(self.load_hds_tagname)
+        hbox.addWidget(self.load_hds_btn_save)
+
+        self._ui_dataload.addLayout(hbox)
+
+        hbox = QHBoxLayout()
+        hbox.setContentsMargins(0,20,0,20)
+        hbox.addWidget(QLabel('Filtrar:'))
+
+        self.type_filter_param = QLineEdit()
+        self.type_filter_param.setObjectName('type-filter-param')
+        self.type_filter_param.setFixedWidth(200)
+
+        self.apply_filters = QPushButton('Buscar')
+        self.apply_filters.clicked.connect(lambda:print(self.sender().text()))
+        self.apply_filters.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        self.clean_filters = QPushButton('Limpiar')
+        self.clean_filters.clicked.connect(lambda:print(self.sender().text()))
+        self.clean_filters.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        hbox.addWidget(self.type_filter_param)
+        hbox.addWidget(self.apply_filters)
+        hbox.addWidget(self.clean_filters)
+
+        self._ui_dataload.addLayout(hbox)
+
+        hbox.addStretch()
+
+        self.scroll_action_table = QScrollArea()
+        self.scroll_action_table.setObjectName('scroll-action-table')
+
+        self._action_table = QVBoxLayout()
+        self._action_table.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.scroll_action_table.setLayout(self._action_table)
+        self._ui_dataload.addWidget(self.scroll_action_table)
+
+        Queries.clean_table_list(self)
+        Queries.action_table_list(self)
+
+        self.commit_assignments = QPushButton('↑↓ Guardar')
+        self.commit_assignments.setMaximumWidth(300)
+        self.commit_assignments.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.commit_assignments.clicked.connect(lambda:Queries.write_changes(self, self._action_table))
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.commit_assignments)
+        vbox.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self._ui_dataload.addLayout(vbox)
+
         self._body.addWidget(self.ui_dataload)
 
         # UI: Download reports.
@@ -570,10 +654,10 @@ class Main(QMainWindow, QWidget):
         self._body.setCurrentIndex(0)
 
         # Auto-login.
-        self.credential_username.setText('g.solano')
-        self.credential_password.setText('AbC#1230')
+        self.credential_username.setText('system.gabriel.solano')
+        self.credential_password.setText('root')
         self.check_credentials.click()
-        # self.action_3_1.trigger()
+        self.action_4_1.trigger()
 
     def echomode(self):
         if self.onoff_echo_1.isChecked(): self.credential_password.setEchoMode(QLineEdit.EchoMode.Normal)
@@ -604,7 +688,7 @@ class Main(QMainWindow, QWidget):
                         cur.execute('SELECT username, requests_processing, create_new_logs, edit_all_fields, data_load, make_assignments, make_reports, admin_users, edit_dict, fullname FROM users WHERE username = ?', (cred_username,))
                         self.connected_user = cur.fetchone()
 
-                        print(self.connected_user)
+                        # print(self.connected_user)
 
                         self._body.setCurrentIndex(1)
                         self.user_location.setText('INICIO')
@@ -621,7 +705,7 @@ class Main(QMainWindow, QWidget):
                         if self.connected_user[5] == 1: self.shorcut_3.setDisabled(False)
                         else: self.shorcut_3.setDisabled(True)
 
-                        # 1 requests_processing ✅
+                        # 1 requests_processing
                         if self.connected_user[1] == 1:
                             self.action_2_1.setDisabled(False)
                             self.shorcut_1.setDisabled(False)
@@ -630,7 +714,7 @@ class Main(QMainWindow, QWidget):
                             self.shorcut_1.setDisabled(True)
 
                         # 2 create_new_logs
-                        if self.connected_user[2] == 0:
+                        if self.connected_user[2] == 1:
                             self.action_2_2.setDisabled(False)
                             self.shorcut_2.setDisabled(False)
                         else:
@@ -640,28 +724,38 @@ class Main(QMainWindow, QWidget):
                         # 7 admin_users
                         if self.connected_user[7] == 1:
                             self.action_3_1.setDisabled(False)
+                            self.shorcut_7.setDisabled(False)
                         else:
                             self.action_3_1.setDisabled(True)
+                            self.shorcut_7.setDisabled(True)
 
                         # 8 edit_dict
                         if self.connected_user[8] == 1:
                             self.action_3_2.setDisabled(False)
+                            self.shorcut_8.setDisabled(False)
                         else:
                             self.action_3_2.setDisabled(True)
+                            self.shorcut_8.setDisabled(True)
 
                         # 4 data_load
                         if self.connected_user[4] == 1:
                             self.action_4_1.setDisabled(False)
+                            self.shorcut_4.setDisabled(False)
                         else:
                             self.action_4_1.setDisabled(True)
+                            self.shorcut_4.setDisabled(True)
 
                         # 6 make_reports
                         if self.connected_user[6] == 1:
                             self.action_4_2.setDisabled(False)
                             self.action_4_3.setDisabled(False)
+                            self.shorcut_5.setDisabled(False)
+                            self.shorcut_6.setDisabled(False)
                         else:
                             self.action_4_2.setDisabled(True)
                             self.action_4_3.setDisabled(True)
+                            self.shorcut_5.setDisabled(True)
+                            self.shorcut_6.setDisabled(True)
 
                         self.welcome_banner.setText(f'Bienvenido(a) {self.connected_user[9]}')
                     else: QMessageBox.warning(self, 'DeskPyL', '\nEste usuario se encuentra deshabilidado, por favor contacte un administrador.\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
@@ -976,6 +1070,18 @@ if __name__ == '__main__':
             }
             #onoff-echo-2{
                 padding: 15px 10px;
+            }
+            #type-filter-param{
+                padding: 3px 8px;
+                background: #d9d9d9;
+                color: #000;
+                border: none;
+                border-radius: 9px;
+            }
+            #scroll-action-table{
+                background: #000;
+                border: 1px solid #60a15f;
+                border-radius: 2px;
             }
         """)
     win = Main()

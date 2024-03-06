@@ -1,5 +1,7 @@
 import sqlite3
 
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox
+from PyQt6.QtCore import Qt
 from datetime import datetime
 
 from text import *
@@ -85,6 +87,102 @@ class Queries():
                     cleanup()
 
                 else: print(self.output_errors_message)
+
+        con.commit()
+        con.close()
+
+    def clean_table_list(self):
+        if self._action_table.count() > 0:
+            while self._action_table.count():
+                child = self._action_table.takeAt(0)
+                if child.widget(): child.widget().deleteLater()
+
+        hbox = QHBoxLayout()
+
+        def lbl_1(lbl):
+            l = QLabel(lbl)
+            l.setStyleSheet('padding: 3px; background: #e1efe1; color: #495; border-bottom: 3px solid #495; border-radius: 3px;')
+            l.setMaximumHeight(25)
+            l.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+            hbox.addWidget(l)
+
+        lbl_1('Solicitud')
+        lbl_1('Identificación')
+        lbl_1('Tipo de caso')
+        lbl_1('Producto')
+        lbl_1('Asignado a')
+        lbl_1('Acción')
+
+        hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self._action_table.addLayout(hbox)
+
+    def action_table_list(self):
+        con = sqlite3.connect('hub.db')
+        cur = con.cursor()
+
+        cur.execute('SELECT fullname FROM users')
+        fname_users = cur.fetchall()
+        self.fname_users = []
+
+        for item in fname_users:
+            for i in item:
+                self.fname_users.append(i)
+
+        cur.execute('SELECT helpdesk, id, class_case, product, assigned_to FROM core WHERE system_assigned_to = ?', ('Pendiente',))
+
+        res = cur.fetchall()
+
+        for rs in res:
+            hbox = QHBoxLayout()
+
+            for r in rs:
+                object = QLabel(f'{r}')
+
+                if rs.index(r) == 4: name_cb = rs[0]
+
+                object.setStyleSheet('padding: 3px; background: #effaef; color: #000; border-bottom: 1px solid #050;')
+                object.setMaximumHeight(25)
+                object.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+                hbox.addWidget(object)
+
+            cb = QComboBox()
+            cb.setCurrentIndex(0)
+            cb.setObjectName(name_cb)
+            cb.setCursor(Qt.CursorShape.PointingHandCursor)
+            cb.addItem('Pendiente')
+            cb.addItem('Seguimiento')
+            cb.addItem('Completado')
+            for fn in self.fname_users:
+                cb.addItem(fn)
+
+            hbox.addWidget(cb)
+
+            self._action_table.addLayout(hbox)
+            hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        con.close()
+
+    def write_changes(self, layout):
+        from os import system
+        system('cls')
+
+        self.cbox_collector = []
+
+        for i in range(layout.count()):
+            sublayout = layout.itemAt(i)
+            if i > 0:
+                for widget in range(sublayout.count()):
+                    widget = sublayout.itemAt(widget)
+                    if widget.widget().objectName(): self.cbox_collector.append(widget.widget())
+        
+        con = sqlite3.connect('hub.db')
+        cur = con.cursor()
+
+        for item in self.cbox_collector:
+            write = f'UPDATE core SET system_assigned_to = "{item.currentText()}" WHERE helpdesk = {item.objectName()}'
+            cur.execute(write)
+
+        self.clean_table_list()
 
         con.commit()
         con.close()
