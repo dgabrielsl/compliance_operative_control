@@ -163,9 +163,6 @@ class Queries():
         con.close()
 
     def write_changes(self, layout):
-        from os import system
-        system('cls')
-
         self.cbox_collector = []
 
         for i in range(layout.count()):
@@ -174,15 +171,27 @@ class Queries():
                 for widget in range(sublayout.count()):
                     widget = sublayout.itemAt(widget)
                     if widget.widget().objectName(): self.cbox_collector.append(widget.widget())
-        
+
         con = sqlite3.connect('hub.db')
         cur = con.cursor()
 
         for item in self.cbox_collector:
-            write = f'UPDATE core SET system_assigned_to = "{item.currentText()}" WHERE helpdesk = {item.objectName()}'
-            cur.execute(write)
+            if item.currentText() != 'Pendiente':
+                write = f'UPDATE core SET system_assigned_to = "{item.currentText()}" WHERE helpdesk = {item.objectName()}'
+                cur.execute(write)
 
-        self.clean_table_list()
+                time_mark = datetime.now().strftime('%d/%m/%Y %H:%M:%SH')
+                description = f'Cambio de asignación / [Pendiente] → [{item.currentText()}]'
+                write = f'INSERT INTO tracelog VALUES ("{item.objectName()}", "{time_mark}", "{self.connected_user[0]}", "{description}")'
+                cur.execute(write)
+
+        if self._action_table.count() > 0:
+            while self._action_table.count():
+                child = self._action_table.takeAt(0)
+                while child.count() > 0:
+                    subchild = child.takeAt(0)
+                    subchild.widget().deleteLater()
+                child.deleteLater()
 
         con.commit()
         con.close()

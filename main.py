@@ -609,14 +609,39 @@ class Main(QMainWindow, QWidget):
 
         hbox.addStretch()
 
+        # self.scroll_action_table = QScrollArea()
+        # self.scroll_action_table.setObjectName('scroll-action-table')
+
+        # self._action_table = QVBoxLayout()
+        # self._action_table.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        # self.scroll_action_table.setLayout(self._action_table)
+        # self._ui_dataload.addWidget(self.scroll_action_table)
+
         self.scroll_action_table = QScrollArea()
-        self.scroll_action_table.setObjectName('scroll-action-table')
-
+        widget_action_table = QWidget()
         self._action_table = QVBoxLayout()
-        self._action_table.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        self.scroll_action_table.setLayout(self._action_table)
-        self._ui_dataload.addWidget(self.scroll_action_table)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         Queries.clean_table_list(self)
         Queries.action_table_list(self)
@@ -624,7 +649,7 @@ class Main(QMainWindow, QWidget):
         self.commit_assignments = QPushButton('↑↓ Guardar')
         self.commit_assignments.setMaximumWidth(300)
         self.commit_assignments.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.commit_assignments.clicked.connect(lambda:Queries.write_changes(self, self._action_table))
+        self.commit_assignments.clicked.connect(self.manage_action_table_saving_ev)
 
         vbox = QVBoxLayout()
         vbox.addWidget(self.commit_assignments)
@@ -926,6 +951,12 @@ class Main(QMainWindow, QWidget):
     def crud_user_accounts(self):
         Queries.check_username(self)
         Queries.get_users(self)
+
+    def manage_action_table_saving_ev(self):
+        Queries.write_changes(self, self._action_table)
+        Queries.clean_table_list(self)
+        Queries.action_table_list(self)
+        self.statusbar.showMessage('Cambios aplicados correctamente',3000)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
