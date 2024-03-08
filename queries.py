@@ -92,9 +92,9 @@ class Queries():
         con.close()
 
     def clean_table_list(self):
-        if self._action_table.count() > 0:
-            while self._action_table.count():
-                child = self._action_table.takeAt(0)
+        if self.display_table.count() > 0:
+            while self.display_table.count():
+                child = self.display_table.takeAt(0)
                 if child.widget(): child.widget().deleteLater()
 
         hbox = QHBoxLayout()
@@ -114,7 +114,7 @@ class Queries():
         lbl_1('Acción')
 
         hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self._action_table.addLayout(hbox)
+        self.display_table.addLayout(hbox)
 
     def action_table_list(self):
         con = sqlite3.connect('hub.db')
@@ -157,7 +157,7 @@ class Queries():
 
             hbox.addWidget(cb)
 
-            self._action_table.addLayout(hbox)
+            self.display_table.addLayout(hbox)
             hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         con.close()
@@ -185,9 +185,9 @@ class Queries():
                 write = f'INSERT INTO tracelog VALUES ("{item.objectName()}", "{time_mark}", "{self.connected_user[0]}", "{description}")'
                 cur.execute(write)
 
-        if self._action_table.count() > 0:
-            while self._action_table.count():
-                child = self._action_table.takeAt(0)
+        if self.display_table.count() > 0:
+            while self.display_table.count():
+                child = self.display_table.takeAt(0)
                 while child.count() > 0:
                     subchild = child.takeAt(0)
                     subchild.widget().deleteLater()

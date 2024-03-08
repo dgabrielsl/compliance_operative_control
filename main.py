@@ -609,38 +609,48 @@ class Main(QMainWindow, QWidget):
 
         hbox.addStretch()
 
-        # self.scroll_action_table = QScrollArea()
-        # self.scroll_action_table.setObjectName('scroll-action-table')
-
-        # self._action_table = QVBoxLayout()
-        # self._action_table.setAlignment(Qt.AlignmentFlag.AlignTop)
-
-        # self.scroll_action_table.setLayout(self._action_table)
-        # self._ui_dataload.addWidget(self.scroll_action_table)
-
         self.scroll_action_table = QScrollArea()
-        widget_action_table = QWidget()
-        self._action_table = QVBoxLayout()
+        self.widget_action_table = QWidget()
+        self._action_table = QHBoxLayout()
+
+        self.display_table = QVBoxLayout()
 
 
 
 
 
+        if self.display_table.count() > 0:
+            while self.display_table.count():
+                child = self.display_table.takeAt(0)
+                if child.widget(): child.widget().deleteLater()
 
+        hbox = QHBoxLayout()
 
+        def lbl_1(lbl):
+            l = QLabel(lbl)
+            l.setStyleSheet('padding: 3px; background: #e1efe1; color: #495; border-bottom: 3px solid #495; border-radius: 3px;')
+            l.setMaximumHeight(25)
+            l.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+            hbox.addWidget(l)
 
+        lbl_1('Solicitud')
+        lbl_1('Identificación')
+        lbl_1('Tipo de caso')
+        lbl_1('Producto')
+        lbl_1('Asignado a')
+        lbl_1('Acción')
 
+        hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.display_table.addLayout(hbox)
 
+        self._action_table.addLayout(self.display_table)
 
+        self.widget_action_table.setLayout(self._action_table)
+        self.scroll_action_table.setWidget(self.widget_action_table)
+        self._ui_dataload.addWidget(self.scroll_action_table)
 
-
-
-
-
-
-
-
-
+        self.scroll_action_table.setObjectName('scroll-action-table')
+        self._action_table.setAlignment(Qt.AlignmentFlag.AlignTop)
 
 
         Queries.clean_table_list(self)
