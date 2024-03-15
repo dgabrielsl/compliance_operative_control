@@ -92,17 +92,18 @@ class Queries():
         con.close()
 
     def clean_table_list(self):
-        if self.display_table.count() > 0:
-            while self.display_table.count():
-                child = self.display_table.takeAt(0)
+        if self.scroll_widget_lyt_table.count() > 0:
+            while self.scroll_widget_lyt_table.count():
+                child = self.scroll_widget_lyt_table.takeAt(0)
                 if child.widget(): child.widget().deleteLater()
 
         hbox = QHBoxLayout()
 
         def lbl_1(lbl):
             l = QLabel(lbl)
-            l.setStyleSheet('padding: 3px; background: #e1efe1; color: #495; border-bottom: 3px solid #495; border-radius: 3px;')
-            l.setMaximumHeight(25)
+            l.setStyleSheet('padding: 3px 30px; background: #e1efe1; color: #495; border-bottom: 3px solid #495; border-radius: 3px;')
+            l.setFixedHeight(25)
+            l.setFixedWidth(185)
             l.setAlignment(Qt.AlignmentFlag.AlignHCenter)
             hbox.addWidget(l)
 
@@ -114,7 +115,7 @@ class Queries():
         lbl_1('Acción')
 
         hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.display_table.addLayout(hbox)
+        self.scroll_widget_lyt_table.addLayout(hbox)
 
     def action_table_list(self):
         con = sqlite3.connect('hub.db')
@@ -141,7 +142,7 @@ class Queries():
                 if rs.index(r) == 4: name_cb = rs[0]
 
                 object.setStyleSheet('padding: 3px; background: #effaef; color: #000; border-bottom: 1px solid #050;')
-                object.setMaximumHeight(25)
+                object.setFixedHeight(25)
                 object.setAlignment(Qt.AlignmentFlag.AlignHCenter)
                 hbox.addWidget(object)
 
@@ -157,7 +158,7 @@ class Queries():
 
             hbox.addWidget(cb)
 
-            self.display_table.addLayout(hbox)
+            self.scroll_widget_lyt_table.addLayout(hbox)
             hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         con.close()
@@ -185,9 +186,9 @@ class Queries():
                 write = f'INSERT INTO tracelog VALUES ("{item.objectName()}", "{time_mark}", "{self.connected_user[0]}", "{description}")'
                 cur.execute(write)
 
-        if self.display_table.count() > 0:
-            while self.display_table.count():
-                child = self.display_table.takeAt(0)
+        if self.scroll_widget_lyt_table.count() > 0:
+            while self.scroll_widget_lyt_table.count():
+                child = self.scroll_widget_lyt_table.takeAt(0)
                 while child.count() > 0:
                     subchild = child.takeAt(0)
                     subchild.widget().deleteLater()

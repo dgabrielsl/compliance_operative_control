@@ -615,34 +615,6 @@ class Main(QMainWindow, QWidget):
 
         self.display_table = QVBoxLayout()
 
-
-
-
-
-        if self.display_table.count() > 0:
-            while self.display_table.count():
-                child = self.display_table.takeAt(0)
-                if child.widget(): child.widget().deleteLater()
-
-        hbox = QHBoxLayout()
-
-        def lbl_1(lbl):
-            l = QLabel(lbl)
-            l.setStyleSheet('padding: 3px; background: #e1efe1; color: #495; border-bottom: 3px solid #495; border-radius: 3px;')
-            l.setMaximumHeight(25)
-            l.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-            hbox.addWidget(l)
-
-        lbl_1('Solicitud')
-        lbl_1('Identificación')
-        lbl_1('Tipo de caso')
-        lbl_1('Producto')
-        lbl_1('Asignado a')
-        lbl_1('Acción')
-
-        hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.display_table.addLayout(hbox)
-
         self._action_table.addLayout(self.display_table)
 
         self.widget_action_table.setLayout(self._action_table)
@@ -651,6 +623,9 @@ class Main(QMainWindow, QWidget):
 
         self.scroll_action_table.setObjectName('scroll-action-table')
         self._action_table.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+
+
 
 
         Queries.clean_table_list(self)
