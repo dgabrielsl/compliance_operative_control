@@ -92,9 +92,9 @@ class Queries():
         con.close()
 
     def clean_table_list(self):
-        if self.scroll_widget_lyt_table.count() > 0:
-            while self.scroll_widget_lyt_table.count():
-                child = self.scroll_widget_lyt_table.takeAt(0)
+        if self.action_table.count() > 0:
+            while self.action_table.count():
+                child = self.action_table.takeAt(0)
                 if child.widget(): child.widget().deleteLater()
 
         hbox = QHBoxLayout()
@@ -103,7 +103,7 @@ class Queries():
             l = QLabel(lbl)
             l.setStyleSheet('padding: 3px 30px; background: #e1efe1; color: #495; border-bottom: 3px solid #495; border-radius: 3px;')
             l.setFixedHeight(25)
-            l.setFixedWidth(185)
+            l.setFixedWidth(200)
             l.setAlignment(Qt.AlignmentFlag.AlignHCenter)
             hbox.addWidget(l)
 
@@ -115,7 +115,7 @@ class Queries():
         lbl_1('Acción')
 
         hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.scroll_widget_lyt_table.addLayout(hbox)
+        self.action_table.addLayout(hbox)
 
     def action_table_list(self):
         con = sqlite3.connect('hub.db')
@@ -158,16 +158,17 @@ class Queries():
 
             hbox.addWidget(cb)
 
-            self.scroll_widget_lyt_table.addLayout(hbox)
+            self.action_table.addLayout(hbox)
+            self.action_table.setAlignment(Qt.AlignmentFlag.AlignTop)
             hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         con.close()
 
-    def write_changes(self, layout):
+    def write_changes(self):
         self.cbox_collector = []
 
-        for i in range(layout.count()):
-            sublayout = layout.itemAt(i)
+        for i in range(self.action_table.count()):
+            sublayout = self.action_table.itemAt(i)
             if i > 0:
                 for widget in range(sublayout.count()):
                     widget = sublayout.itemAt(widget)
@@ -186,9 +187,9 @@ class Queries():
                 write = f'INSERT INTO tracelog VALUES ("{item.objectName()}", "{time_mark}", "{self.connected_user[0]}", "{description}")'
                 cur.execute(write)
 
-        if self.scroll_widget_lyt_table.count() > 0:
-            while self.scroll_widget_lyt_table.count():
-                child = self.scroll_widget_lyt_table.takeAt(0)
+        if self.action_table.count() > 0:
+            while self.action_table.count():
+                child = self.action_table.takeAt(0)
                 while child.count() > 0:
                     subchild = child.takeAt(0)
                     subchild.widget().deleteLater()

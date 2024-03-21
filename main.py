@@ -609,27 +609,17 @@ class Main(QMainWindow, QWidget):
 
         hbox.addStretch()
 
-        self.scroll_action_table = QScrollArea()
-        self.widget_action_table = QWidget()
-        self._action_table = QHBoxLayout()
-
-        self.display_table = QVBoxLayout()
-
-        self._action_table.addLayout(self.display_table)
-
-        self.widget_action_table.setLayout(self._action_table)
-        self.scroll_action_table.setWidget(self.widget_action_table)
-        self._ui_dataload.addWidget(self.scroll_action_table)
-
-        self.scroll_action_table.setObjectName('scroll-action-table')
-        self._action_table.setAlignment(Qt.AlignmentFlag.AlignTop)
-
-
-
-
+        scroll = QScrollArea()
+        swidget = QWidget()
+        self.action_table = QVBoxLayout()
 
         Queries.clean_table_list(self)
         Queries.action_table_list(self)
+
+        swidget.setLayout(self.action_table)
+        scroll.setWidget(swidget)
+
+        self._ui_dataload.addWidget(scroll)
 
         self.commit_assignments = QPushButton('↑↓ Guardar')
         self.commit_assignments.setMaximumWidth(300)
@@ -667,7 +657,7 @@ class Main(QMainWindow, QWidget):
         self.credential_username.setText('system.gabriel.solano')
         self.credential_password.setText('root')
         self.check_credentials.click()
-        self.action_4_1.trigger()
+        self.action_2_2.trigger()
 
     def echomode(self):
         if self.onoff_echo_1.isChecked(): self.credential_password.setEchoMode(QLineEdit.EchoMode.Normal)
@@ -938,7 +928,7 @@ class Main(QMainWindow, QWidget):
         Queries.get_users(self)
 
     def manage_action_table_saving_ev(self):
-        Queries.write_changes(self, self._action_table)
+        Queries.write_changes(self)
         Queries.clean_table_list(self)
         Queries.action_table_list(self)
         self.statusbar.showMessage('Cambios aplicados correctamente',3000)
