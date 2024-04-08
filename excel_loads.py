@@ -72,10 +72,73 @@ class Excel(QWidget):
 
         else: QMessageBox.warning(self, 'DeskPyL', '\nEl nombre de la etiqueta debe ser mayor a 3 y menor que 99 caracteres.\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
 
-
     def load_hds(self):
         path = QFileDialog.getOpenFileName(filter=('*.xlsx'))
         path = path[0]
+
+        if path != '':
+            wb = openpyxl.load_workbook(path)
+            ws = wb.worksheets[0]
+
+            self.helpdesk = ''
+            self.status = ''
+            self.fname = ''
+            self.author = ''
+            self.assigned_to = ''
+            self.updated = ''
+            self.identification = ''
+            self.document = ''
+            self.class_case = ''
+            self.deadline = ''
+            self.product = ''
+            self.result = ''
+            self.customer_answer = ''
+            self.code = ''
+            self.income_source = ''
+            self.warning_amount = ''
+            self.customer_profile = ''
+            self.notif_type = ''
+            self.contact_type = ''
+
+            for i in range(ws.max_column):
+                i += 1
+                value = ws.cell(1,i).value.lower()
+                value = value.replace(':','').replace('.','')
+                value = value.replace('á','a').replace('é','e').replace('í','i').replace('ó','o').replace('ú','u')
+
+                if value.__contains__('#'): self.helpdesk = ws.cell(1,i).column_letter
+                elif value.__contains__('estado'): self.status = ws.cell(1,i).column_letter
+                elif value.__contains__('asunto'): self.fname = ws.cell(1,i).column_letter
+                elif value.__contains__('autor'): self.author = ws.cell(1,i).column_letter
+                elif value.__contains__('asignado a'): self.assigned_to = ws.cell(1,i).column_letter
+                elif value.__contains__('actualizado'): self.updated = ws.cell(1,i).column_letter
+                elif value.__contains__('cedula'): self.identification = ws.cell(1,i).column_letter
+                elif value.__contains__('pagare'): self.document = ws.cell(1,i).column_letter
+                elif value.__contains__('tipo de caso'): self.class_case = ws.cell(1,i).column_letter
+                elif value.__contains__('fecha de prorroga'): self.deadline = ws.cell(1,i).column_letter
+                elif value.__contains__('producto'): self.product = ws.cell(1,i).column_letter
+                elif value.__contains__('resultado de gestion'): self.result = ws.cell(1,i).column_letter
+                elif value.__contains__('respuesta del cliente'): self.customer_answer = ws.cell(1,i).column_letter
+                elif value.__contains__('codigo de cliente'): self.code = ws.cell(1,i).column_letter
+                elif value.__contains__('origen de fondos'): self.income_source = ws.cell(1,i).column_letter
+                elif value.__contains__('monto de la alerta'): self.warning_amount = ws.cell(1,i).column_letter
+                elif value.__contains__('perfil del cliente'): self.customer_profile = ws.cell(1,i).column_letter
+                elif value.__contains__('tipo de notificacion'): self.notif_type = ws.cell(1,i).column_letter
+                elif value.__contains__('tipo de contacto'): self.contact_type = ws.cell(1,i).column_letter
+
+        else: QMessageBox.warning(self, 'DeskPyL', '\nNo se ha cargado ningún archivo.\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+
+
+
+
+
+
+
+
+
+
+
+
 
     def save_hdsreport(self):
         print('save_hdsreport')

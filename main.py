@@ -965,15 +965,19 @@ class Main(QMainWindow, QWidget):
 
     def load_books_search(self):
         if self.sender().text() == '+ SYSDE':
-            Excel.load_sysde(self)
+            try: Excel.load_sysde(self)
+            except Exception as e: QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de SYSDE\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
         else:
-            Excel.load_hds(self)
+            try: Excel.load_hds(self)
+            except Exception as e: QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
 
     def load_books_saving(self):
         if self.sender().objectName() == 'load_sysde_btn_save':
-            Excel.save_sysde(self)
+            try: Excel.save_sysde(self)
+            except Exception as e: QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de SYSDE\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
         else:
-            Excel.save_hdsreport(self)
+            try: Excel.save_hdsreport(self)
+            except Exception as e: QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
