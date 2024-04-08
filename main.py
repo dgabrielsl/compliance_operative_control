@@ -8,6 +8,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import Qt
 
 from queries import *
+from excel_loads import *
 
 os.system('cls')
 
@@ -32,7 +33,7 @@ class Main(QMainWindow, QWidget):
         except Exception as e: pass
 
     # Sysde >>> ID / EMAIL / PHONE
-        try: cur.execute('CREATE TABLE sysde(ID VARCHAR(25) UNIQUE, EMAIL VARCHAR(99), PHONE VARCHAR(25))')
+        try: cur.execute('CREATE TABLE sysde(TIMESTAMP VARCHAR(15), TAGNANME VARCHAR(99) UNIQUE, ID VARCHAR(25) UNIQUE, EMAIL VARCHAR(99), PHONE VARCHAR(25))')
         except Exception as e: pass
 
     # Indicators >>> DATE_MARK / ASSIGNED / HD_REQUEST / USERNAME / START_TIME / END_TIME / CONSUMED_TIME
@@ -53,7 +54,7 @@ class Main(QMainWindow, QWidget):
     def init(self):
         self.setWindowIcon(QIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_ComputerIcon)))
         self.setWindowTitle('DeskPyL - ERP Compliance Operative Control')
-        self.setMinimumWidth(1000)
+        self.setMinimumWidth(1400)
         self.setMinimumHeight(550)
         # self.showMaximized()
         # self.setWindowFlags(Qt.WindowType.WindowMaximizeButtonHint | Qt.WindowType.WindowMinimizeButtonHint)
@@ -360,6 +361,33 @@ class Main(QMainWindow, QWidget):
 
         self._body.addWidget(self.ui_logrequest)
 
+        scroll = QScrollArea()
+        scroll_widget = QWidget()
+        _scroll_widget = QVBoxLayout()
+
+        hbox = QHBoxLayout()
+        l = QLabel('Buscar')
+        l.setStyleSheet('font-size: 15px;')
+
+        self.logrequest_filter_field = QLineEdit()
+        self.logrequest_filter_field.setObjectName('logrequest-filter-field')
+        self.logrequest_filter_field.setPlaceholderText('Número de solicitud HD')
+        self.logrequest_filter_field.setFixedWidth(300)
+
+        self.logrequest_filter_btn = QPushButton('Aplicar')
+        self.logrequest_filter_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        hbox.addWidget(l)
+        hbox.addWidget(self.logrequest_filter_field)
+        hbox.addWidget(self.logrequest_filter_btn)
+        hbox.setContentsMargins(0,0,0,15)
+
+        _scroll_widget.addLayout(hbox)
+
+        scroll_widget.setLayout(_scroll_widget)
+        scroll.setWidget(scroll_widget)
+        self._ui_logrequest.addWidget(scroll)
+
         # UI: Users administration.
         self.ui_usersadmin = QWidget()
 
@@ -548,7 +576,7 @@ class Main(QMainWindow, QWidget):
         self.ui_dataload.setLayout(self._ui_dataload)
 
         self.load_sysde_btn_search = QPushButton('+ SYSDE')
-        self.load_sysde_btn_search.clicked.connect(lambda:print(self.sender().text()))
+        self.load_sysde_btn_search.clicked.connect(self.load_books_search)
         self.load_sysde_btn_search.setFixedWidth(250)
         self.load_sysde_btn_search.setCursor(Qt.CursorShape.PointingHandCursor)
 
@@ -556,7 +584,8 @@ class Main(QMainWindow, QWidget):
         self.load_sysde_tagname.setPlaceholderText('Nombre de la etiqueta')
 
         self.load_sysde_btn_save = QPushButton('Guardar')
-        self.load_sysde_btn_save.clicked.connect(lambda:print(self.sender().text()))
+        self.load_sysde_btn_save.setObjectName('load_sysde_btn_save')
+        self.load_sysde_btn_save.clicked.connect(self.load_books_saving)
         self.load_sysde_btn_save.setCursor(Qt.CursorShape.PointingHandCursor)
 
         hbox = QHBoxLayout()
@@ -567,7 +596,7 @@ class Main(QMainWindow, QWidget):
         self._ui_dataload.addLayout(hbox)
 
         self.load_hds_btn_search = QPushButton('+ Reporte de HDs')
-        self.load_hds_btn_search.clicked.connect(lambda:print(self.sender().text()))
+        self.load_hds_btn_search.clicked.connect(self.load_books_search)
         self.load_hds_btn_search.setFixedWidth(250)
         self.load_hds_btn_search.setCursor(Qt.CursorShape.PointingHandCursor)
 
@@ -575,7 +604,8 @@ class Main(QMainWindow, QWidget):
         self.load_hds_tagname.setPlaceholderText('Nombre de la etiqueta')
 
         self.load_hds_btn_save = QPushButton('Guardar')
-        self.load_hds_btn_save.clicked.connect(lambda:print(self.sender().text()))
+        self.load_hds_btn_save.setObjectName('load_hds_btn_save')
+        self.load_hds_btn_save.clicked.connect(self.load_books_saving)
         self.load_hds_btn_save.setCursor(Qt.CursorShape.PointingHandCursor)
 
         hbox = QHBoxLayout()
@@ -657,7 +687,7 @@ class Main(QMainWindow, QWidget):
         self.credential_username.setText('system.gabriel.solano')
         self.credential_password.setText('root')
         self.check_credentials.click()
-        self.action_2_2.trigger()
+        self.action_4_1.trigger()
 
     def echomode(self):
         if self.onoff_echo_1.isChecked(): self.credential_password.setEchoMode(QLineEdit.EchoMode.Normal)
@@ -933,6 +963,18 @@ class Main(QMainWindow, QWidget):
         Queries.action_table_list(self)
         self.statusbar.showMessage('Cambios aplicados correctamente',3000)
 
+    def load_books_search(self):
+        if self.sender().text() == '+ SYSDE':
+            Excel.load_sysde(self)
+        else:
+            Excel.load_hds(self)
+
+    def load_books_saving(self):
+        if self.sender().objectName() == 'load_sysde_btn_save':
+            Excel.save_sysde(self)
+        else:
+            Excel.save_hdsreport(self)
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyleSheet("""
@@ -991,6 +1033,9 @@ if __name__ == '__main__':
             }
             QCheckBox:disabled{
                 color: #888;
+            }
+            QScrollArea{
+                border: none;
             }
             #menu-bar,
             #status-bar{
@@ -1088,6 +1133,12 @@ if __name__ == '__main__':
                 background: #000;
                 border: 1px solid #60a15f;
                 border-radius: 2px;
+            }
+            #logrequest-filter-field{
+                margin: 0 5px;
+                padding: 5px 8px;
+                background: #535353;
+                color: #fff;
             }
         """)
     win = Main()
