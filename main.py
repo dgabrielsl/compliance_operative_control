@@ -33,7 +33,7 @@ class Main(QMainWindow, QWidget):
         except Exception as e: pass
 
     # Sysde >>> ID / EMAIL / PHONE
-        try: cur.execute('CREATE TABLE sysde(TIMESTAMP VARCHAR(15), TAGNANME VARCHAR(99) UNIQUE, ID VARCHAR(25) UNIQUE, EMAIL VARCHAR(99), PHONE VARCHAR(25))')
+        try: cur.execute('CREATE TABLE sysde(TIMESTAMP VARCHAR(15), TAGNAME VARCHAR(99), ID VARCHAR(25) UNIQUE, EMAIL VARCHAR(99), PHONE VARCHAR(25))')
         except Exception as e: pass
 
     # Indicators >>> DATE_MARK / ASSIGNED / HD_REQUEST / USERNAME / START_TIME / END_TIME / CONSUMED_TIME

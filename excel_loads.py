@@ -43,20 +43,35 @@ class Excel(QWidget):
                     self.records_from_sysde.append(line)
 
     def save_sysde(self):
-        print('save_sysde')
+        tagname_len = len(self.load_sysde_tagname.text())
+        if tagname_len > 2 and tagname_len < 99:
+            con = sqlite3.connect('hub.db')
+            cur = con.cursor()
 
-        # con = sqlite3.connect('hub.db')
-        # cur = con.cursor()
+            timestamp = datetime.now().strftime('%d/%m/%Y %H:%M:%SH')
 
-        # for record in self.records_from_sysde:
-        #     r = f'INSERT INTO sysde VALUES ("{record[0]}", "{record[1]}", "{record[2]}")'
-        #     try: cur.execute(r)
-        #     except Exception as e:
-        #         print(e)
-        #         break
+            try:
+                if len(self.records_from_sysde) > 0:
 
-        # con.commit()
-        # con.close()
+                    for record in self.records_from_sysde:
+                        r = f'INSERT INTO sysde VALUES ("{timestamp}", "{self.load_sysde_tagname.text()}", "{record[0]}", "{record[1]}", "{record[2]}")'
+
+                        try:cur.execute(r)
+                        except Exception as e: print(e)
+
+                    QMessageBox.information(self, 'DeskPyL', f'\n{len(self.records_from_sysde)} registros nuevos cargados correctamente.\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+                    self.load_sysde_tagname.setText('')
+                    self.records_from_sysde.clear()
+
+                else: QMessageBox.information(self, 'DeskPyL', f'\nNo se han precargado datos nuevos para procesar.\t\t\nPor favor cargue datos del reporte de SYSDE para continuar\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+
+            except Exception as e: QMessageBox.information(self, 'DeskPyL', f'\nNo se han precargado datos nuevos para procesar.\t\t\nPor favor cargue datos del reporte de SYSDE para continuar\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+
+            con.commit()
+            con.close()
+
+        else: QMessageBox.warning(self, 'DeskPyL', '\nEl nombre de la etiqueta debe ser mayor a 3 y menor que 99 caracteres.\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+
 
     def load_hds(self):
         path = QFileDialog.getOpenFileName(filter=('*.xlsx'))
