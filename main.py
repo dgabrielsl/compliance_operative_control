@@ -50,15 +50,11 @@ class Main(QMainWindow, QWidget):
 
     # Dictionary >>> Word
         try:
-            cur.execute('CREATE TABLE dictionary(Word VARCHAR(25))')
-
+            cur.execute('CREATE TABLE dictionary(Word VARCHAR(25) UNIQUE)')
             valueslist = ['.', ',', '+', '-', '*', '#', '_', ':', ';', '?', '!', '/', '(', ')', '[', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'ingresos', 'datos', 'activar', 'alertas', 'articulo', 'artículo', 'cliente', 'colaboradora', 'cuentas', 'desinscrito', 'documento', 'duplicadas', 'fondos', 'fondo', 'peps', 'varios', 'smart', 'smar', 'smat', 'samrt', 'revexpedientes', 'revisiónexpediente', 'revisión', 'revision', 'expedientes', 'expediente', 'consultas', 'consulta', 'liberación', 'liberacion', 'transacción', 'transaccion', 'actualizacion', 'actualización', 'actualizar', 'alerta', 'alrta', 'aerta', 'arti', 'art', 'solicitar', 'solicitud', 'bis ', ' bis', 'captación', 'captacion', 'cancelación', 'cancelacion', 'cliente', 'colaboradora', 'colaborador', 'conducir', 'crédito', 'credito', 'cripto', 'critico', 'crítico', 'cuenta', 'dimex', 'doc', 'duplicada', 'error', 'fatca', 'id ', ' id', 'autorización', 'autorizacion', 'inactivación', 'inactivacion', 'ingresar', 'ingreso', 'inscrito', 'licencia', 'limitada', 'línea', 'linea', 'mm ', ' mm', 'nicaragua', 'nivel', 'número', 'numero', 'origen', 'pep', 'respaldo', 'riesgo', 'serv', 'vencida', 'vencido', 'vigente', 'zero', 'por ', ' por', 'aleta', 'dato', 'cancelaciión', 'actualiación', 'actualiacion', 'actualiazación', 'actualiazacion', 'vario', 'puc ', ' puc', 'cancelació', 'originación', 'originacion', 'kit ', ' kit', 'app ', ' app', 'a ln', ' ln ', 'ln ', 'lista', 'negra', 'clliente', 'bloqueo', 'parcial', 'ajuste', 'perfil', 'mensual', 'critpo', 'rev ', ' rev', ' de ', ' gg ', ' no ', ' y ', ' i ', ' s ', 'sm ', ' im ', ' b ', ' r ']
-
             for vl in valueslist:
                 cur.execute('INSERT INTO dictionary VALUES(?)', (vl,))
-
             cur.execute(rec)
-
         except Exception as e: pass
 
         con.commit()
@@ -710,8 +706,8 @@ class Main(QMainWindow, QWidget):
         self.credential_username.setText('system.gabriel.solano')
         self.credential_password.setText('root')
         self.check_credentials.click()
-        # self.action_4_1.trigger() # Data load
-        self.action_3_2.trigger() # Dictionary settings
+        self.action_4_1.trigger() # Data load
+        # self.action_3_2.trigger() # Dictionary settings
 
     def echomode(self):
         if self.onoff_echo_1.isChecked(): self.credential_password.setEchoMode(QLineEdit.EchoMode.Normal)
@@ -864,6 +860,8 @@ class Main(QMainWindow, QWidget):
 
             for r in req:
                 self.dict_ptext.insertPlainText(f'{r}\n')
+
+            self.dict_ptext.verticalScrollBar().setValue(self.dict_ptext.verticalScrollBar().maximum())
 
             con.close()
 
@@ -1038,7 +1036,14 @@ class Main(QMainWindow, QWidget):
 
         cur.execute('DELETE FROM dictionary')
 
-        
+        valueslist = self.dict_ptext.toPlainText().split('\n')
+
+        for vl in valueslist:
+            if vl.strip() != '':
+                try: cur.execute('INSERT INTO dictionary VALUES(?)', (vl,))
+                except Exception as e: pass
+
+        self.dict_ptext.verticalScrollBar().setValue(self.dict_ptext.verticalScrollBar().maximum())
 
         con.commit()
         con.close()

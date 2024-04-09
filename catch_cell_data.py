@@ -1,8 +1,23 @@
+import sqlite3
+
 class Cell():
     # output = output.replace('\t','').replace('\n','').replace('\r','').replace('\f','').replace('\v','')
 
     def ccd_fname(self):
-        pass
+        output = self.insert.lower()
+
+        for di in self.dict_instructions:
+            output = output.replace(di,'')
+
+        output = output.replace('\t','').replace('\n','').replace('\r','').replace('\f','').replace('\v','')
+
+        output = output.split(' ')
+        dropempties = []
+        for op in output:
+            if op != 'id' and op != '' and len(op) > 1: dropempties.append(op)
+        output = ' '.join(dropempties)
+
+        self.insert = output.upper()
 
     def ccd_author(self):
         pass

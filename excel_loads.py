@@ -133,6 +133,19 @@ class Excel(QWidget):
         self.datalake = []
         self.insert = ''
 
+
+        con = sqlite3.connect('hub.db')
+        cur = con.cursor()
+
+        cur.execute('SELECT * FROM dictionary')
+        res = cur.fetchall()
+
+        self.dict_instructions = []
+
+        for r in res:
+            for rr in r:
+                self.dict_instructions.append(rr)
+
         for i in range(int(ws.max_row) + 1):
             if i > 1:
                 line = []
@@ -145,10 +158,19 @@ class Excel(QWidget):
 
 
 
+
                 # Not-builded up yet >>> catch_cell_data + Cell + *
                 self.insert = f'{ws[self.fname+str(i)].value}'
+
+                Cell.ccd_fname(self)
                 print(self.insert)
+
                 line.append(self.insert)
+
+
+
+
+
 
                 self.insert = f'{ws[self.author+str(i)].value}'
                 line.append(self.insert)
@@ -199,6 +221,8 @@ class Excel(QWidget):
                 line.append(self.insert)
 
                 self.datalake.append(line)
+
+        con.close()
 
     def save_hdsreport(self):
         print('save_hdsreport')
