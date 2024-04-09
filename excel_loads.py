@@ -284,11 +284,17 @@ class Excel(QWidget):
                         record = f'INSERT INTO core VALUES ("{timestamp}", "{tagname_str}", "Pendiente", "Nueva", "{dl[0]}", "{dl[6]}", "{dl[7]}", "{dl[13]}", "{dl[8]}", "{dl[1]}", "{dl[10]}", "{dl[14]}", "{dl[15]}", "{dl[16]}", "{dl[17]}", "{dl[18]}", "{dl[12]}", "{dl[3]}", "{dl[4]}", "{dl[11]}", "{dl[5]}", "{dl[9]}", "{dl[2]}")'
                         cur.execute(record)
                         con.commit()
-                    except Exception as e: print(e)
+                    except Exception as e: pass
 
                 QMessageBox.information(self,
                     'DeskPyL COM',
                     f'\n{len(self.datalake)} nuevos registros cargados correctamente.\t\t\n\n📣 Si el nuevo registro (el número de ID) ya existe, el registro se omitirá.\t\t',
+                    QMessageBox.StandardButton.Ok,
+                    QMessageBox.StandardButton.Ok)
+
+                QMessageBox.information(self,
+                    'DeskPyL COM',
+                    f'\n🐛 Aviso de bug :(\t\t\n\nDespués de cada carga, debe reiniciar la aplicación para poder administrar las solicitudes no asignadas.\t\t',
                     QMessageBox.StandardButton.Ok,
                     QMessageBox.StandardButton.Ok)
 

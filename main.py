@@ -30,31 +30,41 @@ class Main(QMainWindow, QWidget):
             time_mark = datetime.now().strftime('%d/%m/%Y %H:%M:%SH')
             rec = f'INSERT INTO users VALUES ("{time_mark}", "{time_mark}", "Developer", "system.gabriel.solano", "Gabriel Solano", "root", 0, 1, 1, 1, 1, 1, 1, 1, 1)'
             cur.execute(rec)
+            con.commit()
         except Exception as e: pass
 
         # Sysde >>> ID / EMAIL / PHONE
-        try: cur.execute('CREATE TABLE sysde(TIMESTAMP VARCHAR(15), TAGNAME VARCHAR(99), ID VARCHAR(25) UNIQUE, EMAIL VARCHAR(99), PHONE VARCHAR(25))')
+        try:
+            cur.execute('CREATE TABLE sysde(TIMESTAMP VARCHAR(15), TAGNAME VARCHAR(99), ID VARCHAR(25) UNIQUE, EMAIL VARCHAR(99), PHONE VARCHAR(25))')
+            con.commit()
         except Exception as e: pass
 
         # Indicators >>> DATE_MARK / ASSIGNED / HD_REQUEST / USERNAME / START_TIME / END_TIME / CONSUMED_TIME
-        try: cur.execute('CREATE TABLE indicators(DATE_MARK VARCHAR(12), ASSIGNED VARCHAR(12), HD_REQUEST VARCHAR(15), USERNAME VARCHAR(50), START_TIME VARCHAR(15), END_TIME VARCHAR(15), CONSUMED_TIME VARCHAR(3))')
+        try:
+            cur.execute('CREATE TABLE indicators(DATE_MARK VARCHAR(12), ASSIGNED VARCHAR(12), HD_REQUEST VARCHAR(15), USERNAME VARCHAR(50), START_TIME VARCHAR(15), END_TIME VARCHAR(15), CONSUMED_TIME VARCHAR(3))')
+            con.commit()
         except Exception as e: pass
 
         # Core >>> CREATED / TAG_NAME / SYSTEM_ASSIGNED_TO / SYSTEM_STATUS / HELPDESK / ID / DOCUMENT / CODE / CLASS_CASE / STATUS / PRODUCT / INCOME_SOURCE / WARNING_AMOUNT / CUSTOMER_PROFILE / NOTIFICATION_TYPE / CONTACT_TYPE / CUSTOMER_ANSWER / AUTHOR / ASSIGNED_TO / RESULT / UPDATED / DEADLINE / FNAME
-        try: cur.execute('CREATE TABLE core(CREATED VARCHAR(12), TAG_NAME VARCHAR(100), SYSTEM_ASSIGNED_TO VARCHAR(30), SYSTEM_STATUS VARCHAR(20), HELPDESK VARCHAR(15) UNIQUE, ID VARCHAR(30), DOCUMENT VARCHAR(20), CODE VARCHAR(20), CLASS_CASE VARCHAR(150), STATUS VARCHAR(30), PRODUCT VARCHAR(20), INCOME_SOURCE VARCHAR(100), WARNING_AMOUNT VARCHAR(50), CUSTOMER_PROFILE VARCHAR(200), NOTIFICATION_TYPE VARCHAR(100), CONTACT_TYPE VARCHAR(150), CUSTOMER_ANSWER VARCHAR(150), AUTHOR VARCHAR(30), ASSIGNED_TO VARCHAR(30), RESULT VARCHAR(300), UPDATED VARCHAR(15), DEADLINE VARCHAR(15), FNAME VARCHAR(250))')
+        try:
+            cur.execute('CREATE TABLE core(CREATED VARCHAR(12), TAG_NAME VARCHAR(100), SYSTEM_ASSIGNED_TO VARCHAR(30), SYSTEM_STATUS VARCHAR(20), HELPDESK VARCHAR(15) UNIQUE, ID VARCHAR(30), DOCUMENT VARCHAR(20), CODE VARCHAR(20), CLASS_CASE VARCHAR(150), STATUS VARCHAR(30), PRODUCT VARCHAR(20), INCOME_SOURCE VARCHAR(100), WARNING_AMOUNT VARCHAR(50), CUSTOMER_PROFILE VARCHAR(200), NOTIFICATION_TYPE VARCHAR(100), CONTACT_TYPE VARCHAR(150), CUSTOMER_ANSWER VARCHAR(150), AUTHOR VARCHAR(30), ASSIGNED_TO VARCHAR(30), RESULT VARCHAR(300), UPDATED VARCHAR(15), DEADLINE VARCHAR(15), FNAME VARCHAR(250))')
+            con.commit()
         except Exception as e: pass
 
         # Trace-log >>> HELPDESK / TIME_MARK / OPERATIVE / DESCRIPTION
-        try: cur.execute('CREATE TABLE tracelog(HELPDESK VARCHAR(12), TIME_MARK VARCHAR(12), OPERATIVE VARCHAR(99), DESCRIPTION VARCHAR(3000))')
+        try:
+            cur.execute('CREATE TABLE tracelog(HELPDESK VARCHAR(12), TIME_MARK VARCHAR(12), OPERATIVE VARCHAR(99), DESCRIPTION VARCHAR(3000))')
+            con.commit()
         except Exception as e: pass
 
     #    Dictionary >>> Word
         try:
-            cur.execute('CREATE TABLE dictionary(Word VARCHAR(25) UNIQUE)')
+            cur.execute('CREATE TABLE dictionary(Word VARCHAR(50) UNIQUE)')
             valueslist = ['.', ',', '+', '-', '*', '#', '_', ':', ';', '?', '!', '/', '(', ')', '[', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'ingresos', 'datos', 'activar', 'alertas', 'articulo', 'artículo', 'cliente', 'colaboradora', 'cuentas', 'desinscrito', 'documento', 'duplicadas', 'fondos', 'fondo', 'peps', 'varios', 'smart', 'smar', 'smat', 'samrt', 'revexpedientes', 'revisiónexpediente', 'revisión', 'revision', 'expedientes', 'expediente', 'consultas', 'consulta', 'liberación', 'liberacion', 'transacción', 'transaccion', 'actualizacion', 'actualización', 'actualizar', 'alerta', 'alrta', 'aerta', 'arti', 'art', 'solicitar', 'solicitud', 'bis ', ' bis', 'captación', 'captacion', 'cancelación', 'cancelacion', 'cliente', 'colaboradora', 'colaborador', 'conducir', 'crédito', 'credito', 'cripto', 'critico', 'crítico', 'cuenta', 'dimex', 'doc', 'duplicada', 'error', 'fatca', 'id ', ' id', 'autorización', 'autorizacion', 'inactivación', 'inactivacion', 'ingresar', 'ingreso', 'inscrito', 'licencia', 'limitada', 'línea', 'linea', 'mm ', ' mm', 'nicaragua', 'nivel', 'número', 'numero', 'origen', 'pep', 'respaldo', 'riesgo', 'serv', 'vencida', 'vencido', 'vigente', 'zero', 'por ', ' por', 'aleta', 'dato', 'cancelaciión', 'actualiación', 'actualiacion', 'actualiazación', 'actualiazacion', 'vario', 'puc ', ' puc', 'cancelació', 'originación', 'originacion', 'kit ', ' kit', 'app ', ' app', 'a ln', ' ln ', 'ln ', 'lista', 'negra', 'clliente', 'bloqueo', 'parcial', 'ajuste', 'perfil', 'mensual', 'critpo', 'rev ', ' rev', ' de ', ' gg ', ' no ', ' y ', ' i ', ' s ', 'sm ', ' im ', ' b ', ' r ', 'crédito', 'credito', 'originación', 'originacion', 'nivel de riesgo', 'nivel', 'riesgo', 'error', 'rev ', 'inactivación', 'inactivacion', 'guardia', 'actualiación', 'actualiacion', 'actulización', 'actulizacion', 'ln ', 'cancelació', 'cancelacio', 'cliente', 'ingreso', 'crítico', 'critico', 'kit', 'app', 'vigente', 'fatca', 'origen', 'por ', 'ingreso', 'bcr', 'vencido', 'vencida', 'inscrito', 'inscrita', 'cuenta', 'cripto', 'zero', 'respaldo de', 'respaldo', 'mm ', 'doc ']
             for vl in valueslist:
                 cur.execute('INSERT INTO dictionary VALUES(?)', (vl,))
-            cur.execute(rec)
+                cur.execute(rec)
+                con.commit()
         except Exception as e: pass
 
         con.commit()
@@ -1006,29 +1016,27 @@ class Main(QMainWindow, QWidget):
 
     def load_books_search(self):
         if self.sender().text() == '+ SYSDE':
-            # try: 
-            Excel.load_sysde(self)
-            # except Exception as e:
-            #     print(e)
-            #     QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de SYSDE\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
-        else:
-            # try:
-            Excel.load_hds(self)
-            # except Exception as e:
-            #     print(e)
-            #     QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
-
-    def load_books_saving(self):
-        if self.sender().objectName() == 'load_sysde_btn_save':
-            try: Excel.save_sysde(self)
+            try: 
+                Excel.load_sysde(self)
             except Exception as e:
                 print(e)
                 QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de SYSDE\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
         else:
-            try: Excel.save_hdsreport(self)
+            try:
+                Excel.load_hds(self)
             except Exception as e:
                 print(e)
                 QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+
+    def load_books_saving(self):
+        if self.sender().objectName() == 'load_sysde_btn_save':
+            try: Excel.save_sysde(self)
+            except Exception as e: QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de SYSDE\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+        else:
+            try:
+                Excel.save_hdsreport(self)
+                self.statusbar.showMessage('🐛 Aviso de bug: se requiere reiniciar la aplicación.')
+            except Exception as e: QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
 
     def run_dict_changes(self):
         con = sqlite3.connect('hub.db')
@@ -1088,6 +1096,8 @@ if __name__ == '__main__':
                 font-size: 14px;
                 border: 1px solid #0f0;
                 border-radius: 5px;
+                selection-color: #000;
+                selection-background-color: #0f0;
             }
             QLineEdit:hover, QLineEdit:focus{
                 background: #222;
