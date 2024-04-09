@@ -89,13 +89,21 @@ class Cell():
         if self.insert == None or self.insert == 'None' or self.insert == 0 or self.insert == '0': self.insert = ''
 
         pattern = re.search(r'\D',self.insert)
-
+        if pattern: self.insert = ''
 
     def ccd_income_source(self):
-        pass
+        if self.insert == None or self.insert == 'None' or self.insert.lower() == 'n/a': self.insert = ''
 
     def ccd_warning_amount(self):
-        pass
+        if self.insert == None or self.insert == 'None' or self.insert == 0 or self.insert == '0': self.insert = ''
+
+        pattern = re.search(r'\d',self.insert)
+        if not pattern: self.insert = ''
+
+        self.insert = self.insert.replace(',','.').replace('?','¢')
+
+        pattern = re.search('(\s\d\d)$',self.insert)
+        if pattern and self.insert != '': self.insert = self.insert.replace(pattern.group(),'')
 
     def ccd_customer_profile(self):
         pass
