@@ -209,22 +209,14 @@ class Excel(QWidget):
                 Cell.ccd_income_source(self)
                 line.append(self.insert)
 
-
-                # Not-builded up yet >>> catch_cell_data + Cell + *
                 self.insert = f'{ws[self.warning_amount+str(i)].value}'
                 Cell.ccd_warning_amount(self)
                 line.append(self.insert)
-                if self.insert != '': print(self.insert)
 
-
-
-
-
-
-
-
+                # Not-builded up yet >>> catch_cell_data + Cell + *
                 self.insert = f'{ws[self.customer_profile+str(i)].value}'
                 line.append(self.insert)
+                print(self.insert)
 
                 self.insert = f'{ws[self.notif_type+str(i)].value}'
                 line.append(self.insert)

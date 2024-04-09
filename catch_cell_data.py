@@ -100,10 +100,54 @@ class Cell():
         pattern = re.search(r'\d',self.insert)
         if not pattern: self.insert = ''
 
-        self.insert = self.insert.replace(',','.').replace('?','¢')
+        self.insert = self.insert.replace('.',' ').replace(',',' ').replace('?','¢')
 
         pattern = re.search('(\s\d\d)$',self.insert)
         if pattern and self.insert != '': self.insert = self.insert.replace(pattern.group(),'')
+
+        self.insert = self.insert.lower().replace('cripto','')
+
+        self.insert = self.insert.split(' ')
+        dropempties = []
+        for char in self.insert:
+            pattern = re.search(r'\d',char)
+            if char: dropempties.append(char)
+        self.insert = ''.join(dropempties)
+
+        self.insert = self.insert.replace('\xa0','').replace('n','').replace('a','').replace('/','')
+
+        pattern = re.search(r'[¢$]',self.insert)
+        pattern2 = re.search(r'\d{0,50}',self.insert)
+        if self.insert != '':
+            if not pattern:
+                if len(pattern2.group()) < 4: self.insert = ''
+                elif pattern2.group() == self.id_match_drop_rule: self.insert = ''
+
+        if self.insert.__contains__('¢') and self.insert.__contains__('$'):
+            pattern = re.findall(r'\d',self.insert)
+            pattern = ''.join(pattern)
+            if int(pattern) <= 10000: self.insert = self.insert.replace('¢','')
+            else: self.insert = self.insert.replace('$','')
+
+        if not self.insert.__contains__('¢') and not self.insert.__contains__('$') and len(self.insert) > 0:
+            n = self.insert
+            n = int(n)
+            if n > 10000: self.insert = f'¢{self.insert}'
+            else: self.insert = f'¢{self.insert}'
+
+        crc = False
+        usd = False
+
+        if self.insert.__contains__('¢'): crc = True
+        else: usd = True
+
+        self.insert = self.insert.replace('¢','').replace('$','')
+
+        try:
+            self.insert = int(self.insert)
+            if crc: self.insert = f'{self.insert:0,.0f} CRC'
+            else: self.insert = f'{self.insert:0,.0f} USD'
+        except Exception as e: pass
 
     def ccd_customer_profile(self):
         pass
