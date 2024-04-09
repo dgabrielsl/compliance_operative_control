@@ -131,7 +131,7 @@ class Queries():
 
         cur.execute('SELECT helpdesk, id, class_case, product, assigned_to FROM core WHERE system_assigned_to = ?', ('Pendiente',))
 
-        res = cur.fetchall()
+        res = cur.fetchmany(20)
 
         for rs in res:
             hbox = QHBoxLayout()
@@ -161,6 +161,8 @@ class Queries():
             self.action_table.addLayout(hbox)
             self.action_table.setAlignment(Qt.AlignmentFlag.AlignTop)
             hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+            if res == 25: break
 
         con.close()
 

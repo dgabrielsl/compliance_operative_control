@@ -292,14 +292,14 @@ class Excel(QWidget):
                     QMessageBox.StandardButton.Ok,
                     QMessageBox.StandardButton.Ok)
 
+                self.load_hds_tagname.setText('')
+
             else:
                 QMessageBox.information(self,
                     'DeskPyL COM',
                     f'\nLa etiqueta ({res}) ya existe.\t\t\nPor favor indique un identificador único para continuar.\t\t',
                     QMessageBox.StandardButton.Ok,
                     QMessageBox.StandardButton.Ok)
-
-                self.load_hds_tagname.setText('')
 
             con.close()
 
