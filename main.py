@@ -48,6 +48,19 @@ class Main(QMainWindow, QWidget):
         try: cur.execute('CREATE TABLE tracelog(HELPDESK VARCHAR(12), TIME_MARK VARCHAR(12), OPERATIVE VARCHAR(99), DESCRIPTION VARCHAR(3000))')
         except Exception as e: pass
 
+    # Dictionary >>> Word
+        try:
+            cur.execute('CREATE TABLE dictionary(Word VARCHAR(25))')
+
+            valueslist = ['.', ',', '+', '-', '*', '#', '_', ':', ';', '?', '!', '/', '(', ')', '[', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'ingresos', 'datos', 'activar', 'alertas', 'articulo', 'artículo', 'cliente', 'colaboradora', 'cuentas', 'desinscrito', 'documento', 'duplicadas', 'fondos', 'fondo', 'peps', 'varios', 'smart', 'smar', 'smat', 'samrt', 'revexpedientes', 'revisiónexpediente', 'revisión', 'revision', 'expedientes', 'expediente', 'consultas', 'consulta', 'liberación', 'liberacion', 'transacción', 'transaccion', 'actualizacion', 'actualización', 'actualizar', 'alerta', 'alrta', 'aerta', 'arti', 'art', 'solicitar', 'solicitud', 'bis ', ' bis', 'captación', 'captacion', 'cancelación', 'cancelacion', 'cliente', 'colaboradora', 'colaborador', 'conducir', 'crédito', 'credito', 'cripto', 'critico', 'crítico', 'cuenta', 'dimex', 'doc', 'duplicada', 'error', 'fatca', 'id ', ' id', 'autorización', 'autorizacion', 'inactivación', 'inactivacion', 'ingresar', 'ingreso', 'inscrito', 'licencia', 'limitada', 'línea', 'linea', 'mm ', ' mm', 'nicaragua', 'nivel', 'número', 'numero', 'origen', 'pep', 'respaldo', 'riesgo', 'serv', 'vencida', 'vencido', 'vigente', 'zero', 'por ', ' por', 'aleta', 'dato', 'cancelaciión', 'actualiación', 'actualiacion', 'actualiazación', 'actualiazacion', 'vario', 'puc ', ' puc', 'cancelació', 'originación', 'originacion', 'kit ', ' kit', 'app ', ' app', 'a ln', ' ln ', 'ln ', 'lista', 'negra', 'clliente', 'bloqueo', 'parcial', 'ajuste', 'perfil', 'mensual', 'critpo', 'rev ', ' rev', ' de ', ' gg ', ' no ', ' y ', ' i ', ' s ', 'sm ', ' im ', ' b ', ' r ']
+
+            for vl in valueslist:
+                cur.execute('INSERT INTO dictionary VALUES(?)', (vl,))
+
+            cur.execute(rec)
+
+        except Exception as e: pass
+
         con.commit()
         con.close()
 
@@ -568,6 +581,16 @@ class Main(QMainWindow, QWidget):
 
         self._body.addWidget(self.ui_dictionary)
 
+        self.dict_ptext = QPlainTextEdit()
+        self.dict_ptext.setObjectName('dict-ptext')
+        self.dict_ptext.setPlaceholderText('Los elementos aquí guardados permiten al sistema limpiar la información del nombre del cliente al cargar reportes de HDs.')
+        self._ui_dictionary.addWidget(self.dict_ptext)
+
+        self.save_dict_params = QPushButton('Guardar cambios')
+        self.save_dict_params.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.save_dict_params.clicked.connect(self.run_dict_changes)
+        self._ui_dictionary.addWidget(self.save_dict_params)
+
         # UI: Load new Excel's reports.
         self.ui_dataload = QWidget()
 
@@ -687,7 +710,8 @@ class Main(QMainWindow, QWidget):
         self.credential_username.setText('system.gabriel.solano')
         self.credential_password.setText('root')
         self.check_credentials.click()
-        self.action_4_1.trigger()
+        # self.action_4_1.trigger() # Data load
+        self.action_3_2.trigger() # Dictionary settings
 
     def echomode(self):
         if self.onoff_echo_1.isChecked(): self.credential_password.setEchoMode(QLineEdit.EchoMode.Normal)
@@ -823,6 +847,25 @@ class Main(QMainWindow, QWidget):
         elif _sender == ('&Configurar diccionario'):
             self.user_location.setText('CONFIGURAR DICCIONARIO')
             self._body.setCurrentIndex(5)
+
+            self.dict_ptext.setPlainText('')
+
+            con = sqlite3.connect('hub.db')
+            cur = con.cursor()
+
+            cur.execute('SELECT * FROM dictionary')
+            res = cur.fetchall()
+
+            req = []
+
+            for r in res:
+                for rr in r:
+                    req.append(rr)
+
+            for r in req:
+                self.dict_ptext.insertPlainText(f'{r}\n')
+
+            con.close()
 
         elif _sender == ('&Cargar datos'):
             self.user_location.setText('CARGAR DATOS & ASIGNAR SOLICITUDES')
@@ -965,19 +1008,40 @@ class Main(QMainWindow, QWidget):
 
     def load_books_search(self):
         if self.sender().text() == '+ SYSDE':
-            try: Excel.load_sysde(self)
-            except Exception as e: QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de SYSDE\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+            # try: 
+            Excel.load_sysde(self)
+            # except Exception as e:
+            #     print(e)
+            #     QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de SYSDE\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
         else:
-            try: Excel.load_hds(self)
-            except Exception as e: QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+            # try:
+            Excel.load_hds(self)
+            # except Exception as e:
+            #     print(e)
+            #     QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
 
     def load_books_saving(self):
         if self.sender().objectName() == 'load_sysde_btn_save':
             try: Excel.save_sysde(self)
-            except Exception as e: QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de SYSDE\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+            except Exception as e:
+                print(e)
+                QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de SYSDE\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
         else:
             try: Excel.save_hdsreport(self)
-            except Exception as e: QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+            except Exception as e:
+                print(e)
+                QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+
+    def run_dict_changes(self):
+        con = sqlite3.connect('hub.db')
+        cur = con.cursor()
+
+        cur.execute('DELETE FROM dictionary')
+
+        
+
+        con.commit()
+        con.close()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
@@ -1143,6 +1207,16 @@ if __name__ == '__main__':
                 padding: 5px 8px;
                 background: #535353;
                 color: #fff;
+            }
+            #dict-ptext{
+                padding: 5px;
+                background: #010;
+                color: #0a0;
+                font-size: 15px;
+                border: 1px solid #0f0;
+                border-radius: 5px;
+                selection-color: #050;
+                selection-background-color: #fff;
             }
         """)
     win = Main()

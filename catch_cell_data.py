@@ -1,9 +1,5 @@
-class Catch_Cell_Data():
-    def ccd_helpdesk(self):
-        pass
-
-    def ccd_status(self):
-        pass
+class Cell():
+    # output = output.replace('\t','').replace('\n','').replace('\r','').replace('\f','').replace('\v','')
 
     def ccd_fname(self):
         pass

@@ -8,6 +8,8 @@ import openpyxl
 import re
 from datetime import datetime
 
+from catch_cell_data import *
+
 class Excel(QWidget):
     def __init__(self):
         super().__init__()
@@ -128,17 +130,75 @@ class Excel(QWidget):
 
         else: QMessageBox.warning(self, 'DeskPyL', '\nNo se ha cargado ningún archivo.\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
 
+        self.datalake = []
+        self.insert = ''
+
+        for i in range(int(ws.max_row) + 1):
+            if i > 1:
+                line = []
+
+                self.insert = f'{ws[self.helpdesk+str(i)].value}'
+                line.append(self.insert)
+
+                self.insert = f'{ws[self.status+str(i)].value}'
+                line.append(self.insert)
 
 
 
+                # Not-builded up yet >>> catch_cell_data + Cell + *
+                self.insert = f'{ws[self.fname+str(i)].value}'
+                print(self.insert)
+                line.append(self.insert)
 
+                self.insert = f'{ws[self.author+str(i)].value}'
+                line.append(self.insert)
 
+                self.insert = f'{ws[self.assigned_to+str(i)].value}'
+                line.append(self.insert)
 
+                self.insert = f'{ws[self.updated+str(i)].value}'
+                line.append(self.insert)
 
+                self.insert = f'{ws[self.identification+str(i)].value}'
+                line.append(self.insert)
 
+                self.insert = f'{ws[self.document+str(i)].value}'
+                line.append(self.insert)
 
+                self.insert = f'{ws[self.class_case+str(i)].value}'
+                line.append(self.insert)
 
+                self.insert = f'{ws[self.deadline+str(i)].value}'
+                line.append(self.insert)
 
+                self.insert = f'{ws[self.product+str(i)].value}'
+                line.append(self.insert)
+
+                self.insert = f'{ws[self.result+str(i)].value}'
+                line.append(self.insert)
+
+                self.insert = f'{ws[self.customer_answer+str(i)].value}'
+                line.append(self.insert)
+
+                self.insert = f'{ws[self.code+str(i)].value}'
+                line.append(self.insert)
+
+                self.insert = f'{ws[self.income_source+str(i)].value}'
+                line.append(self.insert)
+
+                self.insert = f'{ws[self.warning_amount+str(i)].value}'
+                line.append(self.insert)
+
+                self.insert = f'{ws[self.customer_profile+str(i)].value}'
+                line.append(self.insert)
+
+                self.insert = f'{ws[self.notif_type+str(i)].value}'
+                line.append(self.insert)
+
+                self.insert = f'{ws[self.contact_type+str(i)].value}'
+                line.append(self.insert)
+
+                self.datalake.append(line)
 
     def save_hdsreport(self):
         print('save_hdsreport')
