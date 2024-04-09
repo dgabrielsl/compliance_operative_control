@@ -226,9 +226,9 @@ class Excel(QWidget):
                 line.append(self.insert)
 
                 self.datalake.append(line)
-                print(line)
 
         con.close()
 
     def save_hdsreport(self):
-        print('save_hdsreport')
+        for line in self.datalake:
+            print(line[0:12])
