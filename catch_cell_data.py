@@ -42,13 +42,16 @@ class Cell():
         self.insert = f'{datestamp} {timestamp}'
 
     def ccd_document(self):
+        self.insert = self.insert.upper()
+        self.insert = self.insert.replace('\xa0','').replace('\t','').replace('\n','').replace('\r','').replace('\f','').replace('\v','')
+        # self.insert = self.insert.replace('N/A','').replace('NA','')
+
         if self.insert == self.id_match_drop_rule: self.insert = ''
-        else:
-            pattern = re.search(r'R-',self.insert.upper())
-            if not pattern: self.insert = ''
-            else:
-                pattern = re.search(r'\D',self.insert)
-                if pattern or self.insert == 0 or self.insert == '0': self.insert = ''
+        elif self.insert == 0 or self.insert == '0' or self.insert == None or self.insert == 'None': self.insert = ''
+
+        if not self.insert.__contains__('R-'):
+            pattern = re.search(r'\D',self.insert)
+            if pattern: self.insert = ''
 
     def ccd_deadline(self):
         pattern = re.search(r'\d\d\d\d-\d\d-\d\d',self.insert)

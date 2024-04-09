@@ -15,11 +15,11 @@ class Excel(QWidget):
         super().__init__()
 
     def load_sysde(self):
-        path = QFileDialog.getOpenFileName(filter=('*.xlsx'))
-        path = path[0]
+        self.path_a = QFileDialog.getOpenFileName(filter=('*.xlsx'))
+        self.path_a = self.path_a[0]
 
-        if path != '':
-            wb = openpyxl.load_workbook(path)
+        if self.path_a != '':
+            wb = openpyxl.load_workbook(self.path_a)
             ws = wb.worksheets[0]
 
             ws.delete_rows(1,4)
@@ -43,6 +43,12 @@ class Excel(QWidget):
                     line.append(f'{ws[char_2+str(i)].value}'.lower())
                     line.append(str(f'{ws[char_3+str(i)].value}'))
                     self.records_from_sysde.append(line)
+
+            QMessageBox.information(self,
+                'DeskPyL COM',
+                f'\n{len(self.records_from_sysde)} registros nuevos preparados para cargar.\t\t\nIndique una etiqueta para los nuevos registros y selecciones "Guardar".\t\t\n\n📣 La etiqueta se puede repetir.\t\t\n📣 Si el nuevo registro (el número de ID) ya existe, el registro se omitirá.\t\t',
+                QMessageBox.StandardButton.Ok,
+                QMessageBox.StandardButton.Ok)
 
     def save_sysde(self):
         tagname_len = len(self.load_sysde_tagname.text())
@@ -72,14 +78,14 @@ class Excel(QWidget):
             con.commit()
             con.close()
 
-        else: QMessageBox.warning(self, 'DeskPyL', '\nEl nombre de la etiqueta debe ser mayor a 3 y menor que 99 caracteres.\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+        else: QMessageBox.warning(self, 'DeskPyL', '\nEl nombre de la etiqueta debe ser mayor a 3 y menor que 99 caracteres (letras).\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
 
     def load_hds(self):
-        path = QFileDialog.getOpenFileName(filter=('*.xlsx'))
-        path = path[0]
+        self.path_b = QFileDialog.getOpenFileName(filter=('*.xlsx'))
+        self.path_b = self.path_b[0]
 
-        if path != '':
-            wb = openpyxl.load_workbook(path)
+        if self.path_b != '':
+            wb = openpyxl.load_workbook(self.path_b)
             ws = wb.worksheets[0]
 
             self.helpdesk = ''
@@ -130,105 +136,171 @@ class Excel(QWidget):
 
         else: QMessageBox.warning(self, 'DeskPyL', '\nNo se ha cargado ningún archivo.\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
 
-        self.datalake = []
-        self.insert = ''
+        if self.path_b != '':
+            self.datalake = []
+            self.insert = ''
 
+            con = sqlite3.connect('hub.db')
+            cur = con.cursor()
+            cur.execute('SELECT * FROM dictionary')
+            res = cur.fetchall()
 
-        con = sqlite3.connect('hub.db')
-        cur = con.cursor()
+            self.dict_instructions = []
 
-        cur.execute('SELECT * FROM dictionary')
-        res = cur.fetchall()
+            for r in res:
+                for rr in r:
+                    self.dict_instructions.append(rr)
 
-        self.dict_instructions = []
+            con.close()
 
-        for r in res:
-            for rr in r:
-                self.dict_instructions.append(rr)
+            for i in range(int(ws.max_row) + 1):
+                if i > 1:
+                    line = []
 
-        for i in range(int(ws.max_row) + 1):
-            if i > 1:
-                line = []
+                    self.insert = f'{ws[self.helpdesk+str(i)].value}'
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.helpdesk+str(i)].value}'
-                line.append(self.insert)
+                    self.insert = f'{ws[self.status+str(i)].value}'
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.status+str(i)].value}'
-                line.append(self.insert)
+                    self.insert = f'{ws[self.fname+str(i)].value}'
+                    Cell.ccd_fname(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.fname+str(i)].value}'
-                Cell.ccd_fname(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.author+str(i)].value}'
+                    Cell.ccd_full_name_titled(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.author+str(i)].value}'
-                Cell.ccd_full_name_titled(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.assigned_to+str(i)].value}'
+                    Cell.ccd_full_name_titled(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.assigned_to+str(i)].value}'
-                Cell.ccd_full_name_titled(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.updated+str(i)].value}'
+                    Cell.ccd_updated(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.updated+str(i)].value}'
-                Cell.ccd_updated(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.identification+str(i)].value}'
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.identification+str(i)].value}'
-                line.append(self.insert)
+                    self.id_match_drop_rule = self.insert
 
-                self.id_match_drop_rule = self.insert
+                    self.insert = f'{ws[self.document+str(i)].value}'
+                    Cell.ccd_document(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.document+str(i)].value}'
-                Cell.ccd_document(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.class_case+str(i)].value}'
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.class_case+str(i)].value}'
-                line.append(self.insert)
+                    self.insert = f'{ws[self.deadline+str(i)].value}'
+                    Cell.ccd_deadline(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.deadline+str(i)].value}'
-                Cell.ccd_deadline(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.product+str(i)].value}'
+                    Cell.ccd_product(self)
+                    line.append(self.insert)
 
+                    self.insert = f'{ws[self.result+str(i)].value}'
+                    Cell.ccd_result(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.product+str(i)].value}'
-                Cell.ccd_product(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.customer_answer+str(i)].value}'
+                    Cell.ccd_customer_answer(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.result+str(i)].value}'
-                Cell.ccd_result(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.code+str(i)].value}'
+                    Cell.ccd_code(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.customer_answer+str(i)].value}'
-                Cell.ccd_customer_answer(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.income_source+str(i)].value}'
+                    Cell.ccd_income_source(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.code+str(i)].value}'
-                Cell.ccd_code(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.warning_amount+str(i)].value}'
+                    Cell.ccd_warning_amount(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.income_source+str(i)].value}'
-                Cell.ccd_income_source(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.customer_profile+str(i)].value}'
+                    Cell.ccd_customer_profile(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.warning_amount+str(i)].value}'
-                Cell.ccd_warning_amount(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.notif_type+str(i)].value}'
+                    Cell.ccd_notif_type(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.customer_profile+str(i)].value}'
-                Cell.ccd_customer_profile(self)
-                line.append(self.insert)
+                    self.insert = f'{ws[self.contact_type+str(i)].value}'
+                    Cell.ccd_contact_type(self)
+                    line.append(self.insert)
 
-                self.insert = f'{ws[self.notif_type+str(i)].value}'
-                Cell.ccd_notif_type(self)
-                line.append(self.insert)
+                    self.datalake.append(line)
 
-                self.insert = f'{ws[self.contact_type+str(i)].value}'
-                Cell.ccd_contact_type(self)
-                line.append(self.insert)
-
-                self.datalake.append(line)
-
-        con.close()
+            QMessageBox.information(self,
+                'DeskPyL COM',
+                f'\n{len(self.datalake)} registros nuevos preparados para cargar.\t\t\nIndique una etiqueta para los nuevos registros y selecciones "Guardar".\t\t\n📣 Para los registros de reportes de HDs, la etiqueta debe ser única.',
+                QMessageBox.StandardButton.Ok,
+                QMessageBox.StandardButton.Ok)
 
     def save_hdsreport(self):
-        for line in self.datalake:
-            print(line[0:12])
+        tagname_len = len(self.load_hds_tagname.text())
+        tagname_str = self.load_hds_tagname.text()
+
+        if tagname_len > 2 and tagname_len < 99:
+            con = sqlite3.connect('hub.db')
+            cur = con.cursor()
+            cur.execute('SELECT * FROM core WHERE tag_name = ?', (tagname_str,))
+            res = cur.fetchone()
+
+            if res == None or res == 'None':
+                timestamp = datetime.now().strftime('%d/%m/%Y %H:%M:%SH')
+
+                '''
+                TABLE hub.db[core]:
+                    CREATED                     sys: timestamp
+                    TAG_NAME                    sys: tagname_str
+                    SYSTEM_ASSIGNED_TO          str: Pendiente
+                    SYSTEM_STATUS               str: Nueva
+                    HELPDESK                    dl[0]                   &&       HELPDESK                  dl[0]
+                    ID                          dl[6]                   &&       STATUS                    dl[1]
+                    DOCUMENT                    dl[7]                   &&       FNAME                     dl[2]
+                    CODE                        dl[13]                  &&       AUTHOR                    dl[3]
+                    CLASS_CASE                  dl[8]                   &&       ASSIGNED_TO               dl[4]
+                    STATUS                      dl[1]                   &&       UPDATED                   dl[5]
+                    PRODUCT                     dl[10]                  &&       ID                        dl[6]
+                    INCOME_SOURCE               dl[14]                  &&       DOCUMENT                  dl[7]
+                    WARNING_AMOUNT              dl[15]                  &&       CLASS_CASE                dl[8]
+                    CUSTOMER_PROFILE            dl[16]                  &&       DEADLINE                  dl[9]
+                    NOTIFICATION_TYPE           dl[17]                  &&       PRODUCT                   dl[10]
+                    CONTACT_TYPE                dl[18]                  &&       RESULT                    dl[11]
+                    CUSTOMER_ANSWER             dl[12]                  &&       CUSTOMER_ANSWER           dl[12]
+                    AUTHOR                      dl[3]                   &&       CODE                      dl[13]
+                    ASSIGNED_TO                 dl[4]                   &&       INCOME_SOURCE             dl[14]
+                    RESULT                      dl[11]                  &&       WARNING_AMOUNT            dl[15]
+                    UPDATED                     dl[5]                   &&       CUSTOMER_PROFILE          dl[16]
+                    DEADLINE                    dl[9]                   &&       NOTIFICATION_TYPE         dl[17]
+                    FNAME                       dl[2]                   &&       CONTACT_TYPE              dl[18]
+                '''
+
+                for dl in self.datalake:
+                    try:
+                        record = f'INSERT INTO core VALUES ("{timestamp}", "{tagname_str}", "Pendiente", "Nueva", "{dl[0]}", "{dl[6]}", "{dl[7]}", "{dl[13]}", "{dl[8]}", "{dl[1]}", "{dl[10]}", "{dl[14]}", "{dl[15]}", "{dl[16]}", "{dl[17]}", "{dl[18]}", "{dl[12]}", "{dl[3]}", "{dl[4]}", "{dl[11]}", "{dl[5]}", "{dl[9]}", "{dl[2]}")'
+                        cur.execute(record)
+                        con.commit()
+                    except Exception as e: print(e)
+
+                QMessageBox.information(self,
+                    'DeskPyL COM',
+                    f'\n{len(self.datalake)} nuevos registros cargados correctamente.\t\t\n\n📣 Si el nuevo registro (el número de ID) ya existe, el registro se omitirá.\t\t',
+                    QMessageBox.StandardButton.Ok,
+                    QMessageBox.StandardButton.Ok)
+
+            else:
+                QMessageBox.information(self,
+                    'DeskPyL COM',
+                    f'\nLa etiqueta ({res}) ya existe.\t\t\nPor favor indique un identificador único para continuar.\t\t',
+                    QMessageBox.StandardButton.Ok,
+                    QMessageBox.StandardButton.Ok)
+
+                self.load_hds_tagname.setText('')
+
+            con.close()
+
+        else: QMessageBox.warning(self, 'DeskPyL', '\nEl nombre de la etiqueta debe ser mayor a 3 y menor que 99 caracteres (letras).\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)

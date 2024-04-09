@@ -24,7 +24,7 @@ class Main(QMainWindow, QWidget):
         con = sqlite3.connect('hub.db')
         cur = con.cursor()
     
-    # Users >>> CREATED / LAST_MODIFIED / CREATED_BY / USERNAME / FULLNAME / PASSWORD / DISABLED_USER / REQUESTS_PROCESSING / CREATE_NEW_LOGS / EDIT_ALL_FIELDS / DATA_LOAD / MAKE_ASSIGNMENTS / MAKE_REPORTS / ADMIN_USERS / EDIT_DICT
+        # Users >>> CREATED / LAST_MODIFIED / CREATED_BY / USERNAME / FULLNAME / PASSWORD / DISABLED_USER / REQUESTS_PROCESSING / CREATE_NEW_LOGS / EDIT_ALL_FIELDS / DATA_LOAD / MAKE_ASSIGNMENTS / MAKE_REPORTS / ADMIN_USERS / EDIT_DICT
         try:
             cur.execute('CREATE TABLE users(CREATED VARCHAR(12), LAST_MODIFIED VARCHAR(12), CREATED_BY VARCHAR(50), USERNAME VARCHAR(30) UNIQUE, FULLNAME VARCHAR(50), PASSWORD VARCHAR(20), DISABLED_USER BOOLEAN, REQUESTS_PROCESSING BOOLEAN, CREATE_NEW_LOGS BOOLEAN, EDIT_ALL_FIELDS BOOLEAN, DATA_LOAD BOOLEAN, MAKE_ASSIGNMENTS BOOLEAN, MAKE_REPORTS BOOLEAN, ADMIN_USERS BOOLEAN, EDIT_DICT BOOLEAN)')
             time_mark = datetime.now().strftime('%d/%m/%Y %H:%M:%SH')
@@ -32,23 +32,23 @@ class Main(QMainWindow, QWidget):
             cur.execute(rec)
         except Exception as e: pass
 
-    # Sysde >>> ID / EMAIL / PHONE
+        # Sysde >>> ID / EMAIL / PHONE
         try: cur.execute('CREATE TABLE sysde(TIMESTAMP VARCHAR(15), TAGNAME VARCHAR(99), ID VARCHAR(25) UNIQUE, EMAIL VARCHAR(99), PHONE VARCHAR(25))')
         except Exception as e: pass
 
-    # Indicators >>> DATE_MARK / ASSIGNED / HD_REQUEST / USERNAME / START_TIME / END_TIME / CONSUMED_TIME
+        # Indicators >>> DATE_MARK / ASSIGNED / HD_REQUEST / USERNAME / START_TIME / END_TIME / CONSUMED_TIME
         try: cur.execute('CREATE TABLE indicators(DATE_MARK VARCHAR(12), ASSIGNED VARCHAR(12), HD_REQUEST VARCHAR(15), USERNAME VARCHAR(50), START_TIME VARCHAR(15), END_TIME VARCHAR(15), CONSUMED_TIME VARCHAR(3))')
         except Exception as e: pass
 
-    # Core >>> CREATED / TAG_NAME / SYSTEM_ASSIGNED_TO / SYSTEM_STATUS / HELPDESK / ID / DOCUMENT / CODE / CLASS_CASE / STATUS / PRODUCT / INCOME_SOURCE / WARNING_AMOUNT / CUSTOMER_PROFILE / NOTIFICATION_TYPE / CONTACT_TYPE / CUSTOMER_ANSWER / AUTHOR / ASSIGNED_TO / RESULT / UPDATED / DEADLINE
-        try: cur.execute('CREATE TABLE core(CREATED VARCHAR(12), TAG_NAME VARCHAR(150), SYSTEM_ASSIGNED_TO VARCHAR(30), SYSTEM_STATUS VARCHAR(20), HELPDESK VARCHAR(15) UNIQUE, ID VARCHAR(30), DOCUMENT VARCHAR(20), CODE VARCHAR(20), CLASS_CASE VARCHAR(150), STATUS VARCHAR(30), PRODUCT VARCHAR(20), INCOME_SOURCE VARCHAR(100), WARNING_AMOUNT VARCHAR(50), CUSTOMER_PROFILE VARCHAR(200), NOTIFICATION_TYPE VARCHAR(100), CONTACT_TYPE VARCHAR(150), CUSTOMER_ANSWER VARCHAR(150), AUTHOR VARCHAR(30), ASSIGNED_TO VARCHAR(30), RESULT VARCHAR(300), UPDATED VARCHAR(15), DEADLINE VARCHAR(15))')
+        # Core >>> CREATED / TAG_NAME / SYSTEM_ASSIGNED_TO / SYSTEM_STATUS / HELPDESK / ID / DOCUMENT / CODE / CLASS_CASE / STATUS / PRODUCT / INCOME_SOURCE / WARNING_AMOUNT / CUSTOMER_PROFILE / NOTIFICATION_TYPE / CONTACT_TYPE / CUSTOMER_ANSWER / AUTHOR / ASSIGNED_TO / RESULT / UPDATED / DEADLINE / FNAME
+        try: cur.execute('CREATE TABLE core(CREATED VARCHAR(12), TAG_NAME VARCHAR(100), SYSTEM_ASSIGNED_TO VARCHAR(30), SYSTEM_STATUS VARCHAR(20), HELPDESK VARCHAR(15) UNIQUE, ID VARCHAR(30), DOCUMENT VARCHAR(20), CODE VARCHAR(20), CLASS_CASE VARCHAR(150), STATUS VARCHAR(30), PRODUCT VARCHAR(20), INCOME_SOURCE VARCHAR(100), WARNING_AMOUNT VARCHAR(50), CUSTOMER_PROFILE VARCHAR(200), NOTIFICATION_TYPE VARCHAR(100), CONTACT_TYPE VARCHAR(150), CUSTOMER_ANSWER VARCHAR(150), AUTHOR VARCHAR(30), ASSIGNED_TO VARCHAR(30), RESULT VARCHAR(300), UPDATED VARCHAR(15), DEADLINE VARCHAR(15), FNAME VARCHAR(250))')
         except Exception as e: pass
 
-    # Trace-log >>> HELPDESK / TIME_MARK / OPERATIVE / DESCRIPTION
+        # Trace-log >>> HELPDESK / TIME_MARK / OPERATIVE / DESCRIPTION
         try: cur.execute('CREATE TABLE tracelog(HELPDESK VARCHAR(12), TIME_MARK VARCHAR(12), OPERATIVE VARCHAR(99), DESCRIPTION VARCHAR(3000))')
         except Exception as e: pass
 
-    # Dictionary >>> Word
+    #    Dictionary >>> Word
         try:
             cur.execute('CREATE TABLE dictionary(Word VARCHAR(25) UNIQUE)')
             valueslist = ['.', ',', '+', '-', '*', '#', '_', ':', ';', '?', '!', '/', '(', ')', '[', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'ingresos', 'datos', 'activar', 'alertas', 'articulo', 'artículo', 'cliente', 'colaboradora', 'cuentas', 'desinscrito', 'documento', 'duplicadas', 'fondos', 'fondo', 'peps', 'varios', 'smart', 'smar', 'smat', 'samrt', 'revexpedientes', 'revisiónexpediente', 'revisión', 'revision', 'expedientes', 'expediente', 'consultas', 'consulta', 'liberación', 'liberacion', 'transacción', 'transaccion', 'actualizacion', 'actualización', 'actualizar', 'alerta', 'alrta', 'aerta', 'arti', 'art', 'solicitar', 'solicitud', 'bis ', ' bis', 'captación', 'captacion', 'cancelación', 'cancelacion', 'cliente', 'colaboradora', 'colaborador', 'conducir', 'crédito', 'credito', 'cripto', 'critico', 'crítico', 'cuenta', 'dimex', 'doc', 'duplicada', 'error', 'fatca', 'id ', ' id', 'autorización', 'autorizacion', 'inactivación', 'inactivacion', 'ingresar', 'ingreso', 'inscrito', 'licencia', 'limitada', 'línea', 'linea', 'mm ', ' mm', 'nicaragua', 'nivel', 'número', 'numero', 'origen', 'pep', 'respaldo', 'riesgo', 'serv', 'vencida', 'vencido', 'vigente', 'zero', 'por ', ' por', 'aleta', 'dato', 'cancelaciión', 'actualiación', 'actualiacion', 'actualiazación', 'actualiazacion', 'vario', 'puc ', ' puc', 'cancelació', 'originación', 'originacion', 'kit ', ' kit', 'app ', ' app', 'a ln', ' ln ', 'ln ', 'lista', 'negra', 'clliente', 'bloqueo', 'parcial', 'ajuste', 'perfil', 'mensual', 'critpo', 'rev ', ' rev', ' de ', ' gg ', ' no ', ' y ', ' i ', ' s ', 'sm ', ' im ', ' b ', ' r ']

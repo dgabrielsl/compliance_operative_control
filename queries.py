@@ -103,7 +103,7 @@ class Queries():
             l = QLabel(lbl)
             l.setStyleSheet('padding: 3px 30px; background: #e1efe1; color: #495; border-bottom: 3px solid #495; border-radius: 3px;')
             l.setFixedHeight(25)
-            l.setFixedWidth(200)
+            l.setFixedWidth(240)
             l.setAlignment(Qt.AlignmentFlag.AlignHCenter)
             hbox.addWidget(l)
 
