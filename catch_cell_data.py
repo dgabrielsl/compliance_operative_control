@@ -145,15 +145,16 @@ class Cell():
 
         try:
             self.insert = int(self.insert)
-            if crc: self.insert = f'{self.insert:0,.0f} CRC'
-            else: self.insert = f'{self.insert:0,.0f} USD'
+            if crc: self.insert = f'{self.insert:0,.0f} CRC'.replace(',','.')
+            else: self.insert = f'{self.insert:0,.0f} USD'.replace(',','.')
         except Exception as e: pass
 
     def ccd_customer_profile(self):
-        pass
+        if self.insert == None or self.insert == 'None' or self.insert.lower() == 'n/a': self.insert = ''
 
     def ccd_notif_type(self):
-        pass
+        if self.insert == None or self.insert == 'None' or self.insert.lower() == 'n/a': self.insert = ''
+        else: self.insert = self.insert.lower().capitalize()
 
     def ccd_contact_type(self):
-        pass
+        if self.insert == None or self.insert == 'None' or self.insert.lower() == 'n/a': self.insert = ''

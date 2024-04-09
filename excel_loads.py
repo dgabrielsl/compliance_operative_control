@@ -213,18 +213,20 @@ class Excel(QWidget):
                 Cell.ccd_warning_amount(self)
                 line.append(self.insert)
 
-                # Not-builded up yet >>> catch_cell_data + Cell + *
                 self.insert = f'{ws[self.customer_profile+str(i)].value}'
+                Cell.ccd_customer_profile(self)
                 line.append(self.insert)
-                print(self.insert)
 
                 self.insert = f'{ws[self.notif_type+str(i)].value}'
+                Cell.ccd_notif_type(self)
                 line.append(self.insert)
 
                 self.insert = f'{ws[self.contact_type+str(i)].value}'
+                Cell.ccd_contact_type(self)
                 line.append(self.insert)
 
                 self.datalake.append(line)
+                print(line)
 
         con.close()
 
