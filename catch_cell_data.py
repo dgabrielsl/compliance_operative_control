@@ -1,4 +1,4 @@
-import sqlite3
+import re
 
 class Cell():
     # output = output.replace('\t','').replace('\n','').replace('\r','').replace('\f','').replace('\v','')
@@ -19,38 +19,77 @@ class Cell():
 
         self.insert = output.upper()
 
-    def ccd_author(self):
-        pass
+    def ccd_full_name_titled(self):
+        self.insert = self.insert.title()
+        self.insert = self.insert.split(' ')
 
-    def ccd_assigned_to(self):
-        pass
+        dropempties = []
+        for word in self.insert:
+            if word != '': dropempties.append(word)
+        self.insert = ' '.join(dropempties)
 
     def ccd_updated(self):
-        pass
+        self.insert = self.insert.split(' ')
+        datestamp = self.insert[0]
+        timestamp = self.insert[1]
 
-    def ccd_identification(self):
-        pass
+        datestamp = datestamp.split('-')
+        datestamp = f'{datestamp[2]}/{datestamp[1]}/{datestamp[0]}'
+
+        timestamp = timestamp.split(':')
+        timestamp = f'{timestamp[0]}:{timestamp[1]}H'
+
+        self.insert = f'{datestamp} {timestamp}'
 
     def ccd_document(self):
-        pass
-
-    def ccd_class_case(self):
-        pass
+        if self.insert == self.id_match_drop_rule: self.insert = ''
+        else:
+            pattern = re.search(r'R-',self.insert.upper())
+            if not pattern: self.insert = ''
+            else:
+                pattern = re.search(r'\D',self.insert)
+                if pattern or self.insert == 0 or self.insert == '0': self.insert = ''
 
     def ccd_deadline(self):
-        pass
+        pattern = re.search(r'\d\d\d\d-\d\d-\d\d',self.insert)
+
+        if not pattern: self.insert = ''
+        else:
+            try:
+                self.insert = self.insert.split(' ')
+                self.insert = self.insert[0].split('-')
+                self.insert = f'{self.insert[2]}/{self.insert[1]}/{self.insert[0]}'
+            except: pass
 
     def ccd_product(self):
-        pass
+        if self.insert == None or self.insert == 'None': self.insert = ''
 
     def ccd_result(self):
-        pass
+        if self.insert == None or self.insert == 'None': self.insert = ''
+
+        pattern = re.search(r'\d. ',self.insert)
+        if pattern:
+            g = pattern.group()
+            self.insert = self.insert.replace(g,'')
 
     def ccd_customer_answer(self):
-        pass
+        if self.insert == None or self.insert == 'None': self.insert = ''
+
+        pattern = re.search(r'\d. ',self.insert)
+        if pattern:
+            g = pattern.group()
+            self.insert = self.insert.replace(g,'')
+
+        pattern = re.search(r'\d.',self.insert)
+        if pattern:
+            g = pattern.group()
+            self.insert = self.insert.replace(g,'')
 
     def ccd_code(self):
-        pass
+        if self.insert == None or self.insert == 'None' or self.insert == 0 or self.insert == '0': self.insert = ''
+
+        pattern = re.search(r'\D',self.insert)
+
 
     def ccd_income_source(self):
         pass

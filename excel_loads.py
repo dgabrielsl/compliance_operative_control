@@ -156,54 +156,64 @@ class Excel(QWidget):
                 self.insert = f'{ws[self.status+str(i)].value}'
                 line.append(self.insert)
 
-
-
-
-                # Not-builded up yet >>> catch_cell_data + Cell + *
                 self.insert = f'{ws[self.fname+str(i)].value}'
-
                 Cell.ccd_fname(self)
-                print(self.insert)
-
                 line.append(self.insert)
 
-
-
-
-
-
                 self.insert = f'{ws[self.author+str(i)].value}'
+                Cell.ccd_full_name_titled(self)
                 line.append(self.insert)
 
                 self.insert = f'{ws[self.assigned_to+str(i)].value}'
+                Cell.ccd_full_name_titled(self)
                 line.append(self.insert)
 
                 self.insert = f'{ws[self.updated+str(i)].value}'
+                Cell.ccd_updated(self)
                 line.append(self.insert)
 
                 self.insert = f'{ws[self.identification+str(i)].value}'
                 line.append(self.insert)
 
+                self.id_match_drop_rule = self.insert
+
                 self.insert = f'{ws[self.document+str(i)].value}'
+                Cell.ccd_document(self)
                 line.append(self.insert)
 
                 self.insert = f'{ws[self.class_case+str(i)].value}'
                 line.append(self.insert)
 
                 self.insert = f'{ws[self.deadline+str(i)].value}'
+                Cell.ccd_deadline(self)
                 line.append(self.insert)
 
+
                 self.insert = f'{ws[self.product+str(i)].value}'
+                Cell.ccd_product(self)
                 line.append(self.insert)
 
                 self.insert = f'{ws[self.result+str(i)].value}'
+                Cell.ccd_result(self)
                 line.append(self.insert)
 
                 self.insert = f'{ws[self.customer_answer+str(i)].value}'
+                Cell.ccd_customer_answer(self)
                 line.append(self.insert)
 
+
+
+
+                # Not-builded up yet >>> catch_cell_data + Cell + *
                 self.insert = f'{ws[self.code+str(i)].value}'
+                Cell.ccd_code(self)
                 line.append(self.insert)
+                print(self.insert)
+
+
+
+
+
 
                 self.insert = f'{ws[self.income_source+str(i)].value}'
                 line.append(self.insert)
