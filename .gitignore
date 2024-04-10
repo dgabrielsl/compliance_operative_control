@@ -5,3 +5,4 @@ Diccionario.txt
 hub.db
 desktop.ini
 __pycache__/
+.gitignore
