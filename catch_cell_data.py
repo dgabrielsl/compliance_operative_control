@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 class Cell():
     # output = output.replace('\t','').replace('\n','').replace('\r','').replace('\f','').replace('\v','')
@@ -61,7 +62,7 @@ class Cell():
                 self.insert = self.insert.split(' ')
                 self.insert = self.insert[0].split('-')
                 self.insert = f'{self.insert[2]}/{self.insert[1]}/{self.insert[0]}'
-            except: pass
+            except: self.insert = ''
 
     def ccd_product(self):
         if self.insert == None or self.insert == 'None': self.insert = ''
@@ -128,10 +129,16 @@ class Cell():
         if self.insert.__contains__('¢') and self.insert.__contains__('$'):
             pattern = re.findall(r'\d',self.insert)
             pattern = ''.join(pattern)
+
             if int(pattern) <= 10000: self.insert = self.insert.replace('¢','')
             else: self.insert = self.insert.replace('$','')
 
         if not self.insert.__contains__('¢') and not self.insert.__contains__('$') and len(self.insert) > 0:
+            pattern = re.search(r'\D',self.insert)
+            while pattern:
+                self.insert = self.insert.replace(pattern.group(),'')
+                pattern = re.search(r'\D',self.insert)
+
             n = self.insert
             n = int(n)
             if n > 10000: self.insert = f'¢{self.insert}'
@@ -160,3 +167,23 @@ class Cell():
 
     def ccd_contact_type(self):
         if self.insert == None or self.insert == 'None' or self.insert.lower() == 'n/a': self.insert = ''
+
+    def ccd_warning_period(self):
+        if self.insert == None or self.insert == 'None' or self.insert.lower() == 'n/a': self.insert = ''
+
+        pattern = re.search(r'\d\d:\d\d:\d\d',self.insert)
+        if pattern: self.insert = self.insert.replace(pattern.group(),'')
+
+        pattern = re.search(r'\d\d\d\d-\d\d-\d\d',self.insert)
+        if pattern:
+            subs_pattern = pattern.group()
+            subs_pattern = subs_pattern.split('-')
+            subs_pattern.reverse()
+            self.insert = '/'.join(subs_pattern)
+        else:
+            pattern = re.search('  ',self.insert)
+            while pattern:
+                self.insert = self.insert.replace(pattern.group(),' ')
+                pattern = re.search('  ',self.insert)
+
+        if self.insert != '': print(self.insert)

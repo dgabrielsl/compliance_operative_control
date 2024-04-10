@@ -107,6 +107,7 @@ class Excel(QWidget):
             self.customer_profile = ''
             self.notif_type = ''
             self.contact_type = ''
+            self.warning_period = ''
 
             for i in range(ws.max_column):
                 i += 1
@@ -126,13 +127,14 @@ class Excel(QWidget):
                 elif value.__contains__('fecha de prorroga'): self.deadline = ws.cell(1,i).column_letter
                 elif value.__contains__('producto'): self.product = ws.cell(1,i).column_letter
                 elif value.__contains__('resultado de gestion'): self.result = ws.cell(1,i).column_letter
-                elif value.__contains__('respuesta del cliente'): self.customer_answer = ws.cell(1,i).column_letter
+                elif value.__contains__('gestion interna'): self.customer_answer = ws.cell(1,i).column_letter
                 elif value.__contains__('codigo de cliente'): self.code = ws.cell(1,i).column_letter
                 elif value.__contains__('origen de fondos'): self.income_source = ws.cell(1,i).column_letter
                 elif value.__contains__('monto de la alerta'): self.warning_amount = ws.cell(1,i).column_letter
                 elif value.__contains__('perfil del cliente'): self.customer_profile = ws.cell(1,i).column_letter
                 elif value.__contains__('tipo de notificacion'): self.notif_type = ws.cell(1,i).column_letter
                 elif value.__contains__('tipo de contacto'): self.contact_type = ws.cell(1,i).column_letter
+                elif value.__contains__('periodo alerta'): self.warning_period = ws.cell(1,i).column_letter
 
         else: QMessageBox.warning(self, 'DeskPyL', '\nNo se ha cargado ningún archivo.\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
 
@@ -231,6 +233,10 @@ class Excel(QWidget):
                     Cell.ccd_contact_type(self)
                     line.append(self.insert)
 
+                    self.insert = f'{ws[self.warning_period+str(i)].value}'
+                    Cell.ccd_warning_period(self)
+                    line.append(self.insert)
+
                     self.datalake.append(line)
 
             QMessageBox.information(self,
@@ -276,11 +282,12 @@ class Excel(QWidget):
                     UPDATED                     dl[5]                   &&       CUSTOMER_PROFILE          dl[16]
                     DEADLINE                    dl[9]                   &&       NOTIFICATION_TYPE         dl[17]
                     FNAME                       dl[2]                   &&       CONTACT_TYPE              dl[18]
+                    WARNING_PERIOD              dl[19]                  &&       WARNING_PERIOD            dl[19]
                 '''
 
                 for dl in self.datalake:
                     try:
-                        record = f'INSERT INTO core VALUES ("{timestamp}", "{tagname_str}", "Pendiente", "{dl[0]}", "{dl[6]}", "{dl[7]}", "{dl[13]}", "{dl[8]}", "{dl[1]}", "{dl[10]}", "{dl[14]}", "{dl[15]}", "{dl[16]}", "{dl[17]}", "{dl[18]}", "{dl[12]}", "{dl[3]}", "{dl[4]}", "{dl[11]}", "{dl[5]}", "{dl[9]}", "{dl[2]}")'
+                        record = f'INSERT INTO core VALUES ("{timestamp}", "{tagname_str}", "Pendiente", "{dl[0]}", "{dl[6]}", "{dl[7]}", "{dl[13]}", "{dl[8]}", "{dl[1]}", "{dl[10]}", "{dl[14]}", "{dl[15]}", "{dl[16]}", "{dl[17]}", "{dl[18]}", "{dl[12]}", "{dl[3]}", "{dl[4]}", "{dl[11]}", "{dl[5]}", "{dl[9]}", "{dl[2]}", "{dl[19]}")'
                         cur.execute(record)
                         con.commit()
                     except Exception as e: pass
@@ -293,7 +300,7 @@ class Excel(QWidget):
 
                 QMessageBox.information(self,
                     'DeskPyL COM',
-                    f'\n🐛 Aviso de bug :(\t\t\n\nDespués de cada carga, debe reiniciar la aplicación para poder administrar las solicitudes no asignadas.\t\t',
+                    f'\n🐛 Aviso de bug :(\t\t\n\nDespués de cada carga, debe reiniciar la aplicación para poder administrar las solicitudes pendientes de asignar.\t\t',
                     QMessageBox.StandardButton.Ok,
                     QMessageBox.StandardButton.Ok)
 

@@ -47,7 +47,7 @@ class Main(QMainWindow, QWidget):
 
         # Core >>> CREATED / TAG_NAME / SYSTEM_ASSIGNED_TO / HELPDESK / ID / DOCUMENT / CODE / CLASS_CASE / STATUS / PRODUCT / INCOME_SOURCE / WARNING_AMOUNT / CUSTOMER_PROFILE / NOTIFICATION_TYPE / CONTACT_TYPE / CUSTOMER_ANSWER / AUTHOR / ASSIGNED_TO / RESULT / UPDATED / DEADLINE / FNAME
         try:
-            cur.execute('CREATE TABLE core(CREATED VARCHAR(12), TAG_NAME VARCHAR(100), SYSTEM_ASSIGNED_TO VARCHAR(30), HELPDESK VARCHAR(15) UNIQUE, ID VARCHAR(30), DOCUMENT VARCHAR(20), CODE VARCHAR(20), CLASS_CASE VARCHAR(150), STATUS VARCHAR(30), PRODUCT VARCHAR(20), INCOME_SOURCE VARCHAR(100), WARNING_AMOUNT VARCHAR(50), CUSTOMER_PROFILE VARCHAR(200), NOTIFICATION_TYPE VARCHAR(100), CONTACT_TYPE VARCHAR(150), CUSTOMER_ANSWER VARCHAR(150), AUTHOR VARCHAR(30), ASSIGNED_TO VARCHAR(30), RESULT VARCHAR(300), UPDATED VARCHAR(15), DEADLINE VARCHAR(15), FNAME VARCHAR(250))')
+            cur.execute('CREATE TABLE core(CREATED VARCHAR(12), TAG_NAME VARCHAR(100), SYSTEM_ASSIGNED_TO VARCHAR(30), HELPDESK VARCHAR(15) UNIQUE, ID VARCHAR(30), DOCUMENT VARCHAR(20), CODE VARCHAR(20), CLASS_CASE VARCHAR(150), STATUS VARCHAR(30), PRODUCT VARCHAR(20), INCOME_SOURCE VARCHAR(100), WARNING_AMOUNT VARCHAR(50), CUSTOMER_PROFILE VARCHAR(200), NOTIFICATION_TYPE VARCHAR(100), CONTACT_TYPE VARCHAR(150), CUSTOMER_ANSWER VARCHAR(150), AUTHOR VARCHAR(30), ASSIGNED_TO VARCHAR(30), RESULT VARCHAR(300), UPDATED VARCHAR(15), DEADLINE VARCHAR(15), FNAME VARCHAR(250), WARNING_PERIOD VARCHAR(99))')
             con.commit()
         except Exception as e: pass
 
@@ -73,7 +73,7 @@ class Main(QMainWindow, QWidget):
 
     def init(self):
         self.setWindowIcon(QIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_ComputerIcon)))
-        self.setWindowTitle('DeskPyL - ERP Compliance Operative Control')
+        self.setWindowTitle('DeskPyL - ETL Compliance Operative Control')
         self.setMinimumWidth(1400)
         self.setMinimumHeight(550)
         # self.showMaximized()
@@ -223,9 +223,9 @@ class Main(QMainWindow, QWidget):
         self.deskpyl_link.setStatusTip('Ir al sitio web.')
         self.deskpyl_link.clicked.connect(lambda:print(self.sender().text()))
 
-        product_name = QLabel('ERP Control Operativa Cumplimiento')
+        product_name = QLabel('ETL Control Operativa Cumplimiento')
         product_name.setObjectName('product-name')
-        product_name.setStatusTip('Enterprise Resource Planning')
+        product_name.setStatusTip('Extraction / Transformation / Load')
 
         self.about_user = QLabel('↓↑ desconectado')
         self.about_user.setObjectName('about-user')
@@ -1166,11 +1166,11 @@ class Main(QMainWindow, QWidget):
                 print(e)
                 QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de SYSDE\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
         else:
-            try:
+            # try:
                 Excel.load_hds(self)
-            except Exception as e:
-                print(e)
-                QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+            # except Exception as e:
+            #     print(e)
+            #     QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
 
     def load_books_saving(self):
         if self.sender().objectName() == 'load_sysde_btn_save':
