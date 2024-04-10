@@ -44,7 +44,6 @@ class Cell():
     def ccd_document(self):
         self.insert = self.insert.upper()
         self.insert = self.insert.replace('\xa0','').replace('\t','').replace('\n','').replace('\r','').replace('\f','').replace('\v','')
-        # self.insert = self.insert.replace('N/A','').replace('NA','')
 
         if self.insert == self.id_match_drop_rule: self.insert = ''
         elif self.insert == 0 or self.insert == '0' or self.insert == None or self.insert == 'None': self.insert = ''

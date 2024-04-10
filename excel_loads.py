@@ -257,7 +257,6 @@ class Excel(QWidget):
                     CREATED                     sys: timestamp
                     TAG_NAME                    sys: tagname_str
                     SYSTEM_ASSIGNED_TO          str: Pendiente
-                    SYSTEM_STATUS               str: En curso
                     HELPDESK                    dl[0]                   &&       HELPDESK                  dl[0]
                     ID                          dl[6]                   &&       STATUS                    dl[1]
                     DOCUMENT                    dl[7]                   &&       FNAME                     dl[2]
@@ -281,7 +280,7 @@ class Excel(QWidget):
 
                 for dl in self.datalake:
                     try:
-                        record = f'INSERT INTO core VALUES ("{timestamp}", "{tagname_str}", "Pendiente", "En curso", "{dl[0]}", "{dl[6]}", "{dl[7]}", "{dl[13]}", "{dl[8]}", "{dl[1]}", "{dl[10]}", "{dl[14]}", "{dl[15]}", "{dl[16]}", "{dl[17]}", "{dl[18]}", "{dl[12]}", "{dl[3]}", "{dl[4]}", "{dl[11]}", "{dl[5]}", "{dl[9]}", "{dl[2]}")'
+                        record = f'INSERT INTO core VALUES ("{timestamp}", "{tagname_str}", "Pendiente", "{dl[0]}", "{dl[6]}", "{dl[7]}", "{dl[13]}", "{dl[8]}", "{dl[1]}", "{dl[10]}", "{dl[14]}", "{dl[15]}", "{dl[16]}", "{dl[17]}", "{dl[18]}", "{dl[12]}", "{dl[3]}", "{dl[4]}", "{dl[11]}", "{dl[5]}", "{dl[9]}", "{dl[2]}")'
                         cur.execute(record)
                         con.commit()
                     except Exception as e: pass

@@ -45,9 +45,9 @@ class Main(QMainWindow, QWidget):
             con.commit()
         except Exception as e: pass
 
-        # Core >>> CREATED / TAG_NAME / SYSTEM_ASSIGNED_TO / SYSTEM_STATUS / HELPDESK / ID / DOCUMENT / CODE / CLASS_CASE / STATUS / PRODUCT / INCOME_SOURCE / WARNING_AMOUNT / CUSTOMER_PROFILE / NOTIFICATION_TYPE / CONTACT_TYPE / CUSTOMER_ANSWER / AUTHOR / ASSIGNED_TO / RESULT / UPDATED / DEADLINE / FNAME
+        # Core >>> CREATED / TAG_NAME / SYSTEM_ASSIGNED_TO / HELPDESK / ID / DOCUMENT / CODE / CLASS_CASE / STATUS / PRODUCT / INCOME_SOURCE / WARNING_AMOUNT / CUSTOMER_PROFILE / NOTIFICATION_TYPE / CONTACT_TYPE / CUSTOMER_ANSWER / AUTHOR / ASSIGNED_TO / RESULT / UPDATED / DEADLINE / FNAME
         try:
-            cur.execute('CREATE TABLE core(CREATED VARCHAR(12), TAG_NAME VARCHAR(100), SYSTEM_ASSIGNED_TO VARCHAR(30), SYSTEM_STATUS VARCHAR(20), HELPDESK VARCHAR(15) UNIQUE, ID VARCHAR(30), DOCUMENT VARCHAR(20), CODE VARCHAR(20), CLASS_CASE VARCHAR(150), STATUS VARCHAR(30), PRODUCT VARCHAR(20), INCOME_SOURCE VARCHAR(100), WARNING_AMOUNT VARCHAR(50), CUSTOMER_PROFILE VARCHAR(200), NOTIFICATION_TYPE VARCHAR(100), CONTACT_TYPE VARCHAR(150), CUSTOMER_ANSWER VARCHAR(150), AUTHOR VARCHAR(30), ASSIGNED_TO VARCHAR(30), RESULT VARCHAR(300), UPDATED VARCHAR(15), DEADLINE VARCHAR(15), FNAME VARCHAR(250))')
+            cur.execute('CREATE TABLE core(CREATED VARCHAR(12), TAG_NAME VARCHAR(100), SYSTEM_ASSIGNED_TO VARCHAR(30), HELPDESK VARCHAR(15) UNIQUE, ID VARCHAR(30), DOCUMENT VARCHAR(20), CODE VARCHAR(20), CLASS_CASE VARCHAR(150), STATUS VARCHAR(30), PRODUCT VARCHAR(20), INCOME_SOURCE VARCHAR(100), WARNING_AMOUNT VARCHAR(50), CUSTOMER_PROFILE VARCHAR(200), NOTIFICATION_TYPE VARCHAR(100), CONTACT_TYPE VARCHAR(150), CUSTOMER_ANSWER VARCHAR(150), AUTHOR VARCHAR(30), ASSIGNED_TO VARCHAR(30), RESULT VARCHAR(300), UPDATED VARCHAR(15), DEADLINE VARCHAR(15), FNAME VARCHAR(250))')
             con.commit()
         except Exception as e: pass
 
@@ -57,14 +57,15 @@ class Main(QMainWindow, QWidget):
             con.commit()
         except Exception as e: pass
 
-    #    Dictionary >>> Word
+        # Dictionary >>> Word
         try:
-            cur.execute('CREATE TABLE dictionary(Word VARCHAR(50) UNIQUE)')
-            valueslist = ['.', ',', '+', '-', '*', '#', '_', ':', ';', '?', '!', '/', '(', ')', '[', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'ingresos', 'datos', 'activar', 'alertas', 'articulo', 'artículo', 'cliente', 'colaboradora', 'cuentas', 'desinscrito', 'documento', 'duplicadas', 'fondos', 'fondo', 'peps', 'varios', 'smart', 'smar', 'smat', 'samrt', 'revexpedientes', 'revisiónexpediente', 'revisión', 'revision', 'expedientes', 'expediente', 'consultas', 'consulta', 'liberación', 'liberacion', 'transacción', 'transaccion', 'actualizacion', 'actualización', 'actualizar', 'alerta', 'alrta', 'aerta', 'arti', 'art', 'solicitar', 'solicitud', 'bis ', ' bis', 'captación', 'captacion', 'cancelación', 'cancelacion', 'cliente', 'colaboradora', 'colaborador', 'conducir', 'crédito', 'credito', 'cripto', 'critico', 'crítico', 'cuenta', 'dimex', 'doc', 'duplicada', 'error', 'fatca', 'id ', ' id', 'autorización', 'autorizacion', 'inactivación', 'inactivacion', 'ingresar', 'ingreso', 'inscrito', 'licencia', 'limitada', 'línea', 'linea', 'mm ', ' mm', 'nicaragua', 'nivel', 'número', 'numero', 'origen', 'pep', 'respaldo', 'riesgo', 'serv', 'vencida', 'vencido', 'vigente', 'zero', 'por ', ' por', 'aleta', 'dato', 'cancelaciión', 'actualiación', 'actualiacion', 'actualiazación', 'actualiazacion', 'vario', 'puc ', ' puc', 'cancelació', 'originación', 'originacion', 'kit ', ' kit', 'app ', ' app', 'a ln', ' ln ', 'ln ', 'lista', 'negra', 'clliente', 'bloqueo', 'parcial', 'ajuste', 'perfil', 'mensual', 'critpo', 'rev ', ' rev', ' de ', ' gg ', ' no ', ' y ', ' i ', ' s ', 'sm ', ' im ', ' b ', ' r ', 'crédito', 'credito', 'originación', 'originacion', 'nivel de riesgo', 'nivel', 'riesgo', 'error', 'rev ', 'inactivación', 'inactivacion', 'guardia', 'actualiación', 'actualiacion', 'actulización', 'actulizacion', 'ln ', 'cancelació', 'cancelacio', 'cliente', 'ingreso', 'crítico', 'critico', 'kit', 'app', 'vigente', 'fatca', 'origen', 'por ', 'ingreso', 'bcr', 'vencido', 'vencida', 'inscrito', 'inscrita', 'cuenta', 'cripto', 'zero', 'respaldo de', 'respaldo', 'mm ', 'doc ']
+            cur.execute('CREATE TABLE dictionary(WORD VARCHAR(50) UNIQUE)')
+            valueslist = ('.', ',', '+', '-', '*', '#', '_', ':', ';', '?', '!', '/', '(', ')', '[', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'ingresos', 'datos', 'activar', 'alertas', 'articulo', 'artículo', 'cuentas', 'desinscrito', 'documento', 'duplicadas', 'fondos', 'fondo', 'peps', 'varios', 'smart', 'smar', 'smat', 'samrt', 'revexpedientes', 'revisiónexpediente', 'revisión', 'revision', 'expedientes', 'expediente', 'consultas', 'consulta', 'liberación', 'liberacion', 'transacción', 'transaccion', 'actualizacion', 'actualización', 'actualizar', 'alerta', 'alrta', 'aerta', 'arti', 'art', 'solicitar', 'solicitud', 'bis ', ' bis', 'captación', 'captacion', 'cancelación', 'cancelacion', 'cliente', 'colaboradora', 'colaborador', 'conducir', 'cripto', 'critico', 'crítico', 'cuenta', 'dimex', 'doc', 'duplicada', 'error', 'fatca', 'id ', ' id', 'autorización', 'autorizacion', 'inactivación', 'inactivacion', 'ingresar', 'inscrito', 'inscrita', 'licencia', 'limitada', 'línea', 'linea', 'mm ', ' mm', 'nicaragua', 'nivel', 'número', 'numero', 'origen', 'pep', 'respaldo de', 'respaldo', 'riesgo', 'serv', 'vencida', 'vencido', 'vigente', 'zero', ' por', 'aleta', 'dato', 'cancelaciión', 'actualiación', 'actualiacion', 'actualiazación', 'actualiazacion', 'vario', 'puc ', ' puc', 'cancelació', 'cancelacio', 'originación', 'originacion', 'kit ', ' kit', 'app ', ' app', 'a ln', ' ln ', 'ln ', 'lista', 'negra', 'clliente', 'bloqueo', 'parcial', 'ajuste', 'perfil', 'mensual', 'critpo', 'rev ', ' rev', ' de ', ' gg ', ' no ', ' y ', ' i ', ' s ', 'sm ', ' im ', ' b ', ' r ', 'crédito', 'credito', 'nivel de riesgo', 'guardia', 'actulización', 'actulizacion', 'kit', 'app', 'por ', 'bcr', 'doc ')
             for vl in valueslist:
-                cur.execute('INSERT INTO dictionary VALUES(?)', (vl,))
-                cur.execute(rec)
-                con.commit()
+                try:
+                    rec = f'INSERT INTO dictionary VALUES ("{vl}")'
+                    cur.execute(rec)
+                except Exception as e: pass
         except Exception as e: pass
 
         con.commit()
@@ -403,9 +404,7 @@ class Main(QMainWindow, QWidget):
 
         _scroll_widget.addLayout(hbox)
 
-        # workingIn
-
-        slots_hbox = QHBoxLayout()
+        slots_hbox = QHBoxLayout()                          # Box #1 - (Solicitud, ID, Pagaré, Código)
         
         vbox_group_1 = QVBoxLayout()
         vbox_group_2 = QVBoxLayout()
@@ -417,7 +416,7 @@ class Main(QMainWindow, QWidget):
         slots_hbox.addLayout(vbox_group_3)
         slots_hbox.addLayout(vbox_group_4)
 
-        # Slot 1
+        # slot_1
         shbx = QHBoxLayout()
         l = QLabel('Solicitud')
         l.setFixedWidth(80)
@@ -429,7 +428,7 @@ class Main(QMainWindow, QWidget):
         shbx.addWidget(self.slot_1)
         vbox_group_1.addLayout(shbx)
 
-        # Slot 2
+        # slot_2
         shbx = QHBoxLayout()
         l = QLabel('ID')
         l.setFixedWidth(80)
@@ -439,10 +438,9 @@ class Main(QMainWindow, QWidget):
         self.slot_2 = QLineEdit()
         self.slot_2.setFixedWidth(150)
         shbx.addWidget(self.slot_2)
-
         vbox_group_1.addLayout(shbx)
 
-        # Slot 3
+        # slot_3
         shbx = QHBoxLayout()
         l = QLabel('Pagaré')
         l.setFixedWidth(80)
@@ -452,10 +450,9 @@ class Main(QMainWindow, QWidget):
         self.slot_3 = QLineEdit()
         self.slot_3.setFixedWidth(150)
         shbx.addWidget(self.slot_3)
-
         vbox_group_1.addLayout(shbx)
 
-        # Slot 4
+        # slot_4
         shbx = QHBoxLayout()
         l = QLabel('Código')
         l.setFixedWidth(80)
@@ -465,10 +462,9 @@ class Main(QMainWindow, QWidget):
         self.slot_4 = QLineEdit()
         self.slot_4.setFixedWidth(150)
         shbx.addWidget(self.slot_4)
-
         vbox_group_1.addLayout(shbx)
 
-        # Slot 6
+        # slot_5
         shbx = QHBoxLayout()
         l = QLabel('Etapa')
         l.setFixedWidth(80)
@@ -482,6 +478,67 @@ class Main(QMainWindow, QWidget):
         vbox_group_1.addLayout(shbx)
         _scroll_widget.addLayout(slots_hbox)
 
+        slots_hbox = QHBoxLayout()                          # Box #2 - (Asignado a, Estado, Correo, Teléfono, Autor)
+
+        # slot_6
+        shbx = QHBoxLayout()
+        l = QLabel('Asignado a')
+        l.setFixedWidth(80)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_6 = QLineEdit()
+        self.slot_6.setFixedWidth(150)
+        shbx.addWidget(self.slot_6)
+        vbox_group_2.addLayout(shbx)
+
+        # slot_7
+        shbx = QHBoxLayout()
+        l = QLabel('Estado')
+        l.setFixedWidth(80)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_7 = QLineEdit()
+        self.slot_7.setFixedWidth(150)
+        shbx.addWidget(self.slot_7)
+        vbox_group_2.addLayout(shbx)
+
+        # slot_8
+        shbx = QHBoxLayout()
+        l = QLabel('Correo')
+        l.setFixedWidth(80)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_8 = QLineEdit()
+        self.slot_8.setFixedWidth(150)
+        shbx.addWidget(self.slot_8)
+        vbox_group_2.addLayout(shbx)
+
+        # slot_9
+        shbx = QHBoxLayout()
+        l = QLabel('Teléfono')
+        l.setFixedWidth(80)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_9 = QLineEdit()
+        self.slot_9.setFixedWidth(150)
+        shbx.addWidget(self.slot_9)
+        vbox_group_2.addLayout(shbx)
+
+        # slot_10
+        shbx = QHBoxLayout()
+        l = QLabel('Autor')
+        l.setFixedWidth(80)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_10 = QLineEdit()
+        self.slot_10.setFixedWidth(150)
+        shbx.addWidget(self.slot_10)
+        vbox_group_2.addLayout(shbx)
 
 
 
