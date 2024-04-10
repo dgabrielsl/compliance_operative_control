@@ -403,6 +403,92 @@ class Main(QMainWindow, QWidget):
 
         _scroll_widget.addLayout(hbox)
 
+        # workingIn
+
+        slots_hbox = QHBoxLayout()
+        
+        vbox_group_1 = QVBoxLayout()
+        vbox_group_2 = QVBoxLayout()
+        vbox_group_3 = QVBoxLayout()
+        vbox_group_4 = QVBoxLayout()
+
+        slots_hbox.addLayout(vbox_group_1)
+        slots_hbox.addLayout(vbox_group_2)
+        slots_hbox.addLayout(vbox_group_3)
+        slots_hbox.addLayout(vbox_group_4)
+
+        # Slot 1
+        shbx = QHBoxLayout()
+        l = QLabel('Solicitud')
+        l.setFixedWidth(80)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_1 = QLineEdit()
+        self.slot_1.setFixedWidth(150)
+        shbx.addWidget(self.slot_1)
+        vbox_group_1.addLayout(shbx)
+
+        # Slot 2
+        shbx = QHBoxLayout()
+        l = QLabel('ID')
+        l.setFixedWidth(80)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_2 = QLineEdit()
+        self.slot_2.setFixedWidth(150)
+        shbx.addWidget(self.slot_2)
+
+        vbox_group_1.addLayout(shbx)
+
+        # Slot 3
+        shbx = QHBoxLayout()
+        l = QLabel('Pagaré')
+        l.setFixedWidth(80)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_3 = QLineEdit()
+        self.slot_3.setFixedWidth(150)
+        shbx.addWidget(self.slot_3)
+
+        vbox_group_1.addLayout(shbx)
+
+        # Slot 4
+        shbx = QHBoxLayout()
+        l = QLabel('Código')
+        l.setFixedWidth(80)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_4 = QLineEdit()
+        self.slot_4.setFixedWidth(150)
+        shbx.addWidget(self.slot_4)
+
+        vbox_group_1.addLayout(shbx)
+
+        # Slot 6
+        shbx = QHBoxLayout()
+        l = QLabel('Etapa')
+        l.setFixedWidth(80)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_5 = QLineEdit()
+        self.slot_5.setFixedWidth(150)
+        shbx.addWidget(self.slot_5)
+
+        vbox_group_1.addLayout(shbx)
+        _scroll_widget.addLayout(slots_hbox)
+
+
+
+
+
+
+
+
         scroll_widget.setLayout(_scroll_widget)
         scroll.setWidget(scroll_widget)
         self._ui_logrequest.addWidget(scroll)
@@ -712,12 +798,13 @@ class Main(QMainWindow, QWidget):
 
         self._body.setCurrentIndex(0)
 
-        # Auto-login.
+        # Autologin.
         self.credential_username.setText('system.gabriel.solano')
         self.credential_password.setText('root')
         self.check_credentials.click()
         # self.action_4_1.trigger() # Data load
         # self.action_3_2.trigger() # Dictionary settings
+        self.action_2_2.trigger() # Request processcing
 
     def echomode(self):
         if self.onoff_echo_1.isChecked(): self.credential_password.setEchoMode(QLineEdit.EchoMode.Normal)
