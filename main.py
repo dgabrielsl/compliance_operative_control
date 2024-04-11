@@ -5,7 +5,7 @@ from plyer import notification
 
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QDate
 
 from queries import *
 from excel_loads import *
@@ -76,7 +76,7 @@ class Main(QMainWindow, QWidget):
         self.setWindowTitle('DeskPyL - ETL Compliance Operative Control')
         self.setMinimumWidth(1400)
         self.setMinimumHeight(550)
-        # self.showMaximized()
+        self.showMaximized()
         # self.setWindowFlags(Qt.WindowType.WindowMaximizeButtonHint | Qt.WindowType.WindowMinimizeButtonHint)
 
         menubar = self.menuBar()
@@ -472,8 +472,8 @@ class Main(QMainWindow, QWidget):
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
-        self.slot_5 = QLineEdit()
-        self.slot_5.setFixedWidth(180)
+        self.slot_5 = QComboBox()
+        self.slot_5.setFixedWidth(197)
         shbx.addWidget(self.slot_5)
 
         vbox_group_1.addLayout(shbx)
@@ -488,8 +488,8 @@ class Main(QMainWindow, QWidget):
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
-        self.slot_6 = QLineEdit()
-        self.slot_6.setFixedWidth(180)
+        self.slot_6 = QComboBox()
+        self.slot_6.setFixedWidth(197)
         shbx.addWidget(self.slot_6)
         vbox_group_2.addLayout(shbx)
 
@@ -536,8 +536,16 @@ class Main(QMainWindow, QWidget):
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
-        self.slot_10 = QLineEdit()
+        self.slot_10 = QDateEdit()
         self.slot_10.setFixedWidth(180)
+        self.slot_10.setCalendarPopup(True)
+        self.slot_10.setDisplayFormat('dd/MM/yyyy')
+        self.slot_10.calendarWidget().setSelectedDate(QDate.currentDate())
+
+        self.slot_10_today = QPushButton('&Borrar', clicked=self.today)
+        self.slot_10_today.setObjectName('slot-10-today')
+        self.slot_10.calendarWidget().layout().addWidget(self.slot_10_today)
+
         shbx.addWidget(self.slot_10)
         vbox_group_2.addLayout(shbx)
 
@@ -742,17 +750,31 @@ class Main(QMainWindow, QWidget):
 
         hbox = QHBoxLayout()
 
-        self.end_deal_read = QPushButton('Inspeccionar')
-        self.end_deal_create = QPushButton('Guardar')
-        self.end_deal_update = QPushButton('Actualizar')
-        self.end_deal_delete = QPushButton('Eliminar')
+        self.end_deal_read = QPushButton('Inspeccionar', clicked=self.slots_crud, cursor=Qt.CursorShape.PointingHandCursor)
+        self.end_deal_read.setFixedWidth(200)
+
+        self.end_deal_create = QPushButton('Guardar', clicked=self.slots_crud, cursor=Qt.CursorShape.PointingHandCursor)
+        self.end_deal_create.setFixedWidth(200)
+
+        self.end_deal_update = QPushButton('Actualizar', clicked=self.slots_crud, cursor=Qt.CursorShape.PointingHandCursor)
+        self.end_deal_update.setFixedWidth(200)
+
+        self.end_deal_delete = QPushButton('Eliminar', clicked=self.slots_crud, cursor=Qt.CursorShape.PointingHandCursor)
+        self.end_deal_delete.setObjectName('end-deal-delete')
+        self.end_deal_delete.setFixedWidth(200)
+
+        self.end_deal_cancel = QPushButton('Cancelar', clicked=self.slots_crud, cursor=Qt.CursorShape.PointingHandCursor)
+        self.end_deal_cancel.setObjectName('end-deal-cancel')
+        self.end_deal_cancel.setFixedWidth(200)
 
         hbox.addWidget(self.end_deal_read)
         hbox.addWidget(self.end_deal_create)
         hbox.addWidget(self.end_deal_update)
         hbox.addWidget(self.end_deal_delete)
+        hbox.addWidget(self.end_deal_cancel)
 
         hbox.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        hbox.setContentsMargins(0,25,0,25)
         _scroll_widget.addLayout(hbox)
 
         scroll_widget.setLayout(_scroll_widget)
@@ -771,8 +793,7 @@ class Main(QMainWindow, QWidget):
         self.existent_users.setMinimumWidth(250)
         self.existent_users.setCursor(Qt.CursorShape.PointingHandCursor)
 
-        self.existent_users_searchbt = QPushButton('Buscar')
-        self.existent_users_searchbt.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.existent_users_searchbt = QPushButton('Buscar', cursor=Qt.CursorShape.PointingHandCursor)
         self.existent_users_searchbt.clicked.connect(self.select_user_account)
 
         vbox = QVBoxLayout()
@@ -853,9 +874,8 @@ class Main(QMainWindow, QWidget):
         vbox.addLayout(hbox)
         hbox.setContentsMargins(0,0,0,20)
 
-        self.onoff_echo_2 = QCheckBox('Mostrar contraseña')
+        self.onoff_echo_2 = QCheckBox('Mostrar contraseña', cursor=Qt.CursorShape.PointingHandCursor)
         self.onoff_echo_2.setObjectName('onoff-echo-2')
-        self.onoff_echo_2.setCursor(Qt.CursorShape.PointingHandCursor)
         self.onoff_echo_2.clicked.connect(self.echomode_2)
 
         hbox = QHBoxLayout()
@@ -868,25 +888,15 @@ class Main(QMainWindow, QWidget):
         main_hbox.addLayout(vbox)
 
         # Permissions.
-        self.permission_1 = QCheckBox('Inhabilitar usuario')
-        self.permission_2 = QCheckBox('Procesar solicitudes uno a uno')
-        self.permission_3 = QCheckBox('Crear/eliminar registros nuevos manualmente')
-        self.permission_4 = QCheckBox('Editar todos los campos')
-        self.permission_5 = QCheckBox('Cargar reportes')
-        self.permission_6 = QCheckBox('Asignar solicitudes')
-        self.permission_7 = QCheckBox('Generar/descargar reportes')
-        self.permission_8 = QCheckBox('Administrar otros usuarios')
-        self.permission_9 = QCheckBox('Editar el diccionario')
-
-        self.permission_1.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.permission_2.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.permission_3.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.permission_4.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.permission_5.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.permission_6.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.permission_7.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.permission_8.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.permission_9.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.permission_1 = QCheckBox('Inhabilitar usuario', cursor=Qt.CursorShape.PointingHandCursor)
+        self.permission_2 = QCheckBox('Procesar solicitudes uno a uno', cursor=Qt.CursorShape.PointingHandCursor)
+        self.permission_3 = QCheckBox('Crear/eliminar registros nuevos manualmente', cursor=Qt.CursorShape.PointingHandCursor)
+        self.permission_4 = QCheckBox('Editar todos los campos', cursor=Qt.CursorShape.PointingHandCursor)
+        self.permission_5 = QCheckBox('Cargar reportes', cursor=Qt.CursorShape.PointingHandCursor)
+        self.permission_6 = QCheckBox('Asignar solicitudes', cursor=Qt.CursorShape.PointingHandCursor)
+        self.permission_7 = QCheckBox('Generar/descargar reportes', cursor=Qt.CursorShape.PointingHandCursor)
+        self.permission_8 = QCheckBox('Administrar otros usuarios', cursor=Qt.CursorShape.PointingHandCursor)
+        self.permission_9 = QCheckBox('Editar el diccionario', cursor=Qt.CursorShape.PointingHandCursor)
 
         vbox = QVBoxLayout()
         vbox.setContentsMargins(50,0,50,0)
@@ -913,12 +923,10 @@ class Main(QMainWindow, QWidget):
         scroll.setWidget(scroll_widget)
         self._ui_usersadmin.addWidget(scroll)
 
-        self.save_user_changes = QPushButton('Guardar/Actualizar')
-        self.save_user_changes.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.save_user_changes = QPushButton('Guardar/Actualizar', cursor=Qt.CursorShape.PointingHandCursor)
         self.save_user_changes.clicked.connect(self.crud_user_accounts)
 
-        self.delete_user = QPushButton('Eliminar')
-        self.delete_user.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.delete_user = QPushButton('Eliminar', cursor=Qt.CursorShape.PointingHandCursor)
         self.delete_user.clicked.connect(self.crud_user_accounts)
 
         hbox = QHBoxLayout()
@@ -944,8 +952,7 @@ class Main(QMainWindow, QWidget):
         self.dict_ptext.setPlaceholderText('Los elementos aquí guardados permiten al sistema limpiar la información del nombre del cliente al cargar reportes de HDs.')
         self._ui_dictionary.addWidget(self.dict_ptext)
 
-        self.save_dict_params = QPushButton('Guardar cambios')
-        self.save_dict_params.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.save_dict_params = QPushButton('Guardar cambios', cursor=Qt.CursorShape.PointingHandCursor)
         self.save_dict_params.clicked.connect(self.run_dict_changes)
         self._ui_dictionary.addWidget(self.save_dict_params)
 
@@ -956,18 +963,14 @@ class Main(QMainWindow, QWidget):
         self._ui_dataload.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         self.ui_dataload.setLayout(self._ui_dataload)
 
-        self.load_sysde_btn_search = QPushButton('+ SYSDE')
-        self.load_sysde_btn_search.clicked.connect(self.load_books_search)
+        self.load_sysde_btn_search = QPushButton('+ SYSDE', clicked=self.load_books_search, cursor=Qt.CursorShape.PointingHandCursor)
         self.load_sysde_btn_search.setFixedWidth(250)
-        self.load_sysde_btn_search.setCursor(Qt.CursorShape.PointingHandCursor)
 
         self.load_sysde_tagname = QLineEdit()
         self.load_sysde_tagname.setPlaceholderText('Nombre de la etiqueta')
 
-        self.load_sysde_btn_save = QPushButton('Guardar')
+        self.load_sysde_btn_save = QPushButton('Guardar', clicked=self.load_books_saving, cursor=Qt.CursorShape.PointingHandCursor)
         self.load_sysde_btn_save.setObjectName('load_sysde_btn_save')
-        self.load_sysde_btn_save.clicked.connect(self.load_books_saving)
-        self.load_sysde_btn_save.setCursor(Qt.CursorShape.PointingHandCursor)
 
         hbox = QHBoxLayout()
         hbox.addWidget(self.load_sysde_btn_search)
@@ -976,18 +979,14 @@ class Main(QMainWindow, QWidget):
 
         self._ui_dataload.addLayout(hbox)
 
-        self.load_hds_btn_search = QPushButton('+ Reporte de HDs')
-        self.load_hds_btn_search.clicked.connect(self.load_books_search)
+        self.load_hds_btn_search = QPushButton('+ Reporte de HDs', clicked=self.load_books_search, cursor=Qt.CursorShape.PointingHandCursor)
         self.load_hds_btn_search.setFixedWidth(250)
-        self.load_hds_btn_search.setCursor(Qt.CursorShape.PointingHandCursor)
 
         self.load_hds_tagname = QLineEdit()
         self.load_hds_tagname.setPlaceholderText('Nombre de la etiqueta')
 
-        self.load_hds_btn_save = QPushButton('Guardar')
+        self.load_hds_btn_save = QPushButton('Guardar', clicked=self.load_books_saving, cursor=Qt.CursorShape.PointingHandCursor)
         self.load_hds_btn_save.setObjectName('load_hds_btn_save')
-        self.load_hds_btn_save.clicked.connect(self.load_books_saving)
-        self.load_hds_btn_save.setCursor(Qt.CursorShape.PointingHandCursor)
 
         hbox = QHBoxLayout()
         hbox.addWidget(self.load_hds_btn_search)
@@ -1004,13 +1003,8 @@ class Main(QMainWindow, QWidget):
         self.type_filter_param.setObjectName('type-filter-param')
         self.type_filter_param.setFixedWidth(200)
 
-        self.apply_filters = QPushButton('Buscar')
-        self.apply_filters.clicked.connect(lambda:print(self.sender().text()))
-        self.apply_filters.setCursor(Qt.CursorShape.PointingHandCursor)
-
-        self.clean_filters = QPushButton('Limpiar')
-        self.clean_filters.clicked.connect(lambda:print(self.sender().text()))
-        self.clean_filters.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.apply_filters = QPushButton('Buscar', clicked=lambda:print(self.sender().text()), cursor=Qt.CursorShape.PointingHandCursor)
+        self.clean_filters = QPushButton('Limpiar', clicked=lambda:print(self.sender().text()), cursor=Qt.CursorShape.PointingHandCursor)
 
         hbox.addWidget(self.type_filter_param)
         hbox.addWidget(self.apply_filters)
@@ -1032,10 +1026,8 @@ class Main(QMainWindow, QWidget):
 
         self._ui_dataload.addWidget(scroll)
 
-        self.commit_assignments = QPushButton('↑↓ Guardar')
+        self.commit_assignments = QPushButton('↑↓ Guardar', clicked=self.manage_action_table_saving_ev, cursor=Qt.CursorShape.PointingHandCursor)
         self.commit_assignments.setMaximumWidth(300)
-        self.commit_assignments.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.commit_assignments.clicked.connect(self.manage_action_table_saving_ev)
 
         vbox = QVBoxLayout()
         vbox.addWidget(self.commit_assignments)
@@ -1409,6 +1401,12 @@ class Main(QMainWindow, QWidget):
         con.commit()
         con.close()
 
+    def today(self):
+        self.slot_10.calendarWidget().setSelectedDate(QDate.currentDate())
+
+    def slots_crud(self):
+        print(self.sender().text())
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyleSheet("""
@@ -1430,6 +1428,13 @@ if __name__ == '__main__':
                 color: #fff;
                 border: 1px solid #fff;
             }
+            QDateEdit{
+                background: #003600;
+                padding: 5px;
+                color: #0f0;
+                border: 1px solid #0f0;
+                border-radius: 2px;
+            }
             QPushButton:disabled{
                 background: #222;
                 color: #888;
@@ -1437,7 +1442,9 @@ if __name__ == '__main__':
             }
             QComboBox{
                 margin: 0 10px;
+                margin-right: 7px;
                 padding: 5px 10px;
+                padding-right: 0;
                 background: #041;
                 color: #0f0;
                 border: 1px solid #0f0;
@@ -1612,6 +1619,30 @@ if __name__ == '__main__':
                 border-radius: 5px;
                 selection-color: #0f0;
                 selection-background-color: #000;
+            }
+            #end-deal-delete{
+                background: #340003;
+                color: #f00;
+                border: 1px solid #f00;
+            }
+            #end-deal-cancel{
+                background: #342200;
+                color: #ffd600;
+                border: 1px solid #ffd600;
+            }
+            #end-deal-delete:hover,
+            #end-deal-delete:focus,
+            #end-deal-cancel:hover,
+            #end-deal-cancel:focus{
+                color: #fff;
+                border: 1px solid #fff;
+            }
+            #slot-10-today{
+                padding: 2px;
+                background: #fff;
+                color: #000;
+                border: none;
+                border-radius: 0;
             }
         """)
     win = Main()
