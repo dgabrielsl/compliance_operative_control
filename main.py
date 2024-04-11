@@ -1,6 +1,6 @@
 import os, sys, sqlite3
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from plyer import notification
 
 from PyQt6.QtWidgets import *
@@ -9,6 +9,7 @@ from PyQt6.QtCore import Qt, QDate
 
 from queries import *
 from excel_loads import *
+from dates import *
 
 os.system('cls')
 
@@ -76,7 +77,7 @@ class Main(QMainWindow, QWidget):
         self.setWindowTitle('DeskPyL - ETL Compliance Operative Control')
         self.setMinimumWidth(1400)
         self.setMinimumHeight(550)
-        self.showMaximized()
+        # self.showMaximized()
         # self.setWindowFlags(Qt.WindowType.WindowMaximizeButtonHint | Qt.WindowType.WindowMinimizeButtonHint)
 
         menubar = self.menuBar()
@@ -490,6 +491,7 @@ class Main(QMainWindow, QWidget):
 
         self.slot_6 = QComboBox()
         self.slot_6.setFixedWidth(197)
+        self.slot_6.addItems(['Pendiente','Seguimiento','Resuelta','Cerrada','Rechazada'])
         shbx.addWidget(self.slot_6)
         vbox_group_2.addLayout(shbx)
 
@@ -540,7 +542,15 @@ class Main(QMainWindow, QWidget):
         self.slot_10.setFixedWidth(180)
         self.slot_10.setCalendarPopup(True)
         self.slot_10.setDisplayFormat('dd/MM/yyyy')
+        self.slot_10.setMinimumDate(QDate.currentDate())
+
+        now = datetime.now()
+        future_date = now + timedelta(weeks=6)
+        print(future_date)
+
+        self.slot_10.setMaximumDate(future_date)
         self.slot_10.calendarWidget().setSelectedDate(QDate.currentDate())
+        self.slot_10.calendarWidget().selectionChanged.connect(self.date_selected)
 
         self.slot_10_today = QPushButton('&Borrar', clicked=self.today)
         self.slot_10_today.setObjectName('slot-10-today')
@@ -1406,6 +1416,12 @@ class Main(QMainWindow, QWidget):
 
     def slots_crud(self):
         print(self.sender().text())
+
+    def date_selected(self):
+        sel = self.slot_10.calendarWidget().selectedDate().toPyDate()
+        self.datetocheck = str(sel)
+
+        Dates.contrast(self)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

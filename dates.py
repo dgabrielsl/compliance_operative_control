@@ -1,13 +1,14 @@
 import re
-import datetime
+from datetime import datetime
+from PyQt6.QtCore import QDate
 
 class Dates():
     def contrast(self):
-        self.insert = self.insert.split(' ')
-        self.insert = self.insert[0].split('-')
-        datetocheck = '/'.join(self.insert)
-        self.insert = f'{self.insert[2]}/{self.insert[1]}/{self.insert[0]}'
+        # self.datetocheck = self.datetocheck.replace('-','/')
+        datestamp = datetime.now().strftime('%Y-%m-%d')
 
-        datestamp = datetime.now().strftime('%Y/%m/%d')
-
-        if datetocheck < datestamp: self.insert = ''
+        if self.datetocheck < datestamp: self.datetocheck = ''
+        else:
+            self.datetocheck = self.datetocheck.split('-')
+            self.datetocheck = f'{self.datetocheck[2]}/{self.datetocheck[1]}/{self.datetocheck[0]}'
+            print(self.datetocheck)
