@@ -69,6 +69,12 @@ class Main(QMainWindow, QWidget):
                 except Exception as e: pass
         except Exception as e: pass
 
+        # Scripts >>> CREATED / MODIFIED / CREATOR / HEADER / DESCRIPTION / BODY / STATUS
+        try:
+            cur.execute('CREATE TABLE scripts(CREATED VARCHAR(20), MODIFIED VARCHAR(20), CREATOR VARCHAR(99), HEADER VARCHAR(250) UNIQUE, DESCRIPTION VARCHAR(100), BODY VARCHAR(2500), STATUS BOOLEAN)')
+            con.commit()
+        except Exception as e: pass
+
         con.commit()
         con.close()
 
@@ -76,7 +82,8 @@ class Main(QMainWindow, QWidget):
         self.setWindowIcon(QIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_ComputerIcon)))
         self.setWindowTitle('DeskPyL - ETL Compliance Operative Control')
         self.setMinimumWidth(1400)
-        self.setMinimumHeight(550)
+        # self.setMinimumHeight(550)
+        self.setMinimumHeight(900)
         # self.showMaximized()
         # self.setWindowFlags(Qt.WindowType.WindowMaximizeButtonHint | Qt.WindowType.WindowMinimizeButtonHint)
 
@@ -145,6 +152,13 @@ class Main(QMainWindow, QWidget):
         self.action_3_2.triggered.connect(self.navigation)
         self.action_3_2.setDisabled(True)
         opt_menu_3.addAction(self.action_3_2)
+
+        self.action_3_3 = QAction(QIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DesktopIcon)), '&Administrar scripts', self)
+        self.action_3_3.setShortcut('Ctrl+S')
+        self.action_3_3.setStatusTip('Administrar los scripts habilitados para copiar y brindar respuestas.')
+        self.action_3_3.triggered.connect(self.navigation)
+        # self.action_3_3.setDisabled(True)
+        opt_menu_3.addAction(self.action_3_3)
 
     # (4) Data analysis.
         opt_menu_4 = menubar.addMenu('&Datos')
@@ -491,7 +505,8 @@ class Main(QMainWindow, QWidget):
 
         self.slot_6 = QComboBox()
         self.slot_6.setFixedWidth(197)
-        self.slot_6.addItems(['Pendiente','Seguimiento','Resuelta','Cerrada','Rechazada'])
+        self.slot_6.addItems(['Nueva','En curso','Resuelta','Rechazada','Cerrada'])
+        self.slot_6.insertSeparator(2)
         shbx.addWidget(self.slot_6)
         vbox_group_2.addLayout(shbx)
 
@@ -542,14 +557,11 @@ class Main(QMainWindow, QWidget):
         self.slot_10.setFixedWidth(180)
         self.slot_10.setCalendarPopup(True)
         self.slot_10.setDisplayFormat('dd/MM/yyyy')
-        self.slot_10.setMinimumDate(QDate.currentDate())
-
-        now = datetime.now()
-        future_date = now + timedelta(weeks=6)
-        print(future_date)
-
-        self.slot_10.setMaximumDate(future_date)
-        self.slot_10.calendarWidget().setSelectedDate(QDate.currentDate())
+        # self.slot_10.setMinimumDate(QDate.currentDate())
+        # now = datetime.now()
+        # future_date = now + timedelta(weeks=8)
+        # self.slot_10.setMaximumDate(future_date)
+        # self.slot_10.calendarWidget().setSelectedDate(QDate.currentDate())
         self.slot_10.calendarWidget().selectionChanged.connect(self.date_selected)
 
         self.slot_10_today = QPushButton('&Borrar', clicked=self.today)
@@ -1066,6 +1078,15 @@ class Main(QMainWindow, QWidget):
 
         self._body.setCurrentIndex(0)
 
+        # UI: Scripts.
+        self.ui_scripts = QWidget()
+
+        self._ui_scripts = QVBoxLayout()
+        self._ui_scripts.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
+        self.ui_scripts.setLayout(self._ui_scripts)
+
+        self._body.addWidget(self.ui_scripts)
+
         # Autologin.
         self.credential_username.setText('system.gabriel.solano')
         self.credential_password.setText('root')
@@ -1104,6 +1125,7 @@ class Main(QMainWindow, QWidget):
                         self.connected_user = cur.fetchone()
 
                         # print(self.connected_user)
+                        Queries.fill_assigned_to(self)
 
                         self._body.setCurrentIndex(1)
                         self.user_location.setText('INICIO')
@@ -1241,6 +1263,10 @@ class Main(QMainWindow, QWidget):
         elif _sender == ('&Métricas'):
             self.user_location.setText('MÉTRICAS')
             self._body.setCurrentIndex(8)
+
+        elif _sender == ('&Administrar scripts'):
+            self.user_location.setText('ADMINISTRAR SCRIPTS')
+            self._body.setCurrentIndex(9)
 
         elif _sender == ('&Ayuda'): print(_sender)
 

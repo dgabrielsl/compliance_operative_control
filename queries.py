@@ -199,3 +199,24 @@ class Queries():
 
         con.commit()
         con.close()
+
+    def fill_assigned_to(self):
+        self.slot_5.clear()
+        self.slot_5.addItem(self.connected_user[-1])
+        self.slot_5.addItem('Devolver a bandeja principal')
+
+        internal_con = sqlite3.connect('hub.db')
+        internal_cur = internal_con.cursor()
+
+        internal_cur.execute('SELECT fullname FROM users')
+        fname_users = internal_cur.fetchall()
+
+        for item in fname_users:
+            for fname in item:
+                if fname == self.connected_user[-1]: continue
+                self.slot_5.addItem(fname)
+
+        self.slot_5.insertSeparator(1)
+        self.slot_5.insertSeparator(3)
+
+        internal_con.close()
