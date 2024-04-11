@@ -1,10 +1,8 @@
-HD_s report (1).xlsx
-HDs report.xlsx
-SYSDE.xlsx
-Diccionario.txt
-hub.db
 desktop.ini
+ETL Compliance.code-workspace
+HDs report.xlsx
+HD_s report (1).xlsx
+SYSDE.xlsx
+hub.db
 __pycache__/
-BFS (ref)/
-ETL (old)/
 .gitignore

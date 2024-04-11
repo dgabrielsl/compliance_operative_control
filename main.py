@@ -401,10 +401,11 @@ class Main(QMainWindow, QWidget):
         hbox.addWidget(self.logrequest_filter_field)
         hbox.addWidget(self.logrequest_filter_btn)
         hbox.setContentsMargins(0,0,0,15)
+        hbox.addStretch()
 
         _scroll_widget.addLayout(hbox)
 
-        slots_hbox = QHBoxLayout()                          # Box #1 - (Solicitud, ID, Pagaré, Código)
+        slots_hbox = QHBoxLayout()                          # Box #1 - (Solicitud, ID, Pagaré, Código, Asignado a)
         
         vbox_group_1 = QVBoxLayout()
         vbox_group_2 = QVBoxLayout()
@@ -419,132 +420,340 @@ class Main(QMainWindow, QWidget):
         # slot_1
         shbx = QHBoxLayout()
         l = QLabel('Solicitud')
-        l.setFixedWidth(80)
+        l.setFixedWidth(115)
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
         self.slot_1 = QLineEdit()
-        self.slot_1.setFixedWidth(150)
+        self.slot_1.setFixedWidth(180)
         shbx.addWidget(self.slot_1)
         vbox_group_1.addLayout(shbx)
 
         # slot_2
         shbx = QHBoxLayout()
         l = QLabel('ID')
-        l.setFixedWidth(80)
+        l.setFixedWidth(115)
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
         self.slot_2 = QLineEdit()
-        self.slot_2.setFixedWidth(150)
+        self.slot_2.setFixedWidth(180)
         shbx.addWidget(self.slot_2)
         vbox_group_1.addLayout(shbx)
 
         # slot_3
         shbx = QHBoxLayout()
         l = QLabel('Pagaré')
-        l.setFixedWidth(80)
+        l.setFixedWidth(115)
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
         self.slot_3 = QLineEdit()
-        self.slot_3.setFixedWidth(150)
+        self.slot_3.setFixedWidth(180)
         shbx.addWidget(self.slot_3)
         vbox_group_1.addLayout(shbx)
 
         # slot_4
         shbx = QHBoxLayout()
         l = QLabel('Código')
-        l.setFixedWidth(80)
+        l.setFixedWidth(115)
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
         self.slot_4 = QLineEdit()
-        self.slot_4.setFixedWidth(150)
+        self.slot_4.setFixedWidth(180)
         shbx.addWidget(self.slot_4)
         vbox_group_1.addLayout(shbx)
 
         # slot_5
         shbx = QHBoxLayout()
-        l = QLabel('Etapa')
-        l.setFixedWidth(80)
+        l = QLabel('Asignado a')
+        l.setFixedWidth(115)
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
         self.slot_5 = QLineEdit()
-        self.slot_5.setFixedWidth(150)
+        self.slot_5.setFixedWidth(180)
         shbx.addWidget(self.slot_5)
 
         vbox_group_1.addLayout(shbx)
         _scroll_widget.addLayout(slots_hbox)
 
-        slots_hbox = QHBoxLayout()                          # Box #2 - (Asignado a, Estado, Correo, Teléfono, Autor)
+        slots_hbox = QHBoxLayout()                          # Box #2 - (Estado, Correo, Teléfono, Autor, Prórroga)
 
         # slot_6
         shbx = QHBoxLayout()
-        l = QLabel('Asignado a')
-        l.setFixedWidth(80)
+        l = QLabel('Estado')
+        l.setFixedWidth(115)
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
         self.slot_6 = QLineEdit()
-        self.slot_6.setFixedWidth(150)
+        self.slot_6.setFixedWidth(180)
         shbx.addWidget(self.slot_6)
         vbox_group_2.addLayout(shbx)
 
         # slot_7
         shbx = QHBoxLayout()
-        l = QLabel('Estado')
-        l.setFixedWidth(80)
+        l = QLabel('Correo')
+        l.setFixedWidth(115)
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
         self.slot_7 = QLineEdit()
-        self.slot_7.setFixedWidth(150)
+        self.slot_7.setFixedWidth(180)
         shbx.addWidget(self.slot_7)
         vbox_group_2.addLayout(shbx)
 
         # slot_8
         shbx = QHBoxLayout()
-        l = QLabel('Correo')
-        l.setFixedWidth(80)
+        l = QLabel('Teléfono')
+        l.setFixedWidth(115)
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
         self.slot_8 = QLineEdit()
-        self.slot_8.setFixedWidth(150)
+        self.slot_8.setFixedWidth(180)
         shbx.addWidget(self.slot_8)
         vbox_group_2.addLayout(shbx)
 
         # slot_9
         shbx = QHBoxLayout()
-        l = QLabel('Teléfono')
-        l.setFixedWidth(80)
+        l = QLabel('Autor')
+        l.setFixedWidth(115)
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
         self.slot_9 = QLineEdit()
-        self.slot_9.setFixedWidth(150)
+        self.slot_9.setFixedWidth(180)
         shbx.addWidget(self.slot_9)
         vbox_group_2.addLayout(shbx)
 
         # slot_10
         shbx = QHBoxLayout()
-        l = QLabel('Autor')
-        l.setFixedWidth(80)
+        l = QLabel('Prórroga')
+        l.setFixedWidth(115)
         l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         shbx.addWidget(l)
 
         self.slot_10 = QLineEdit()
-        self.slot_10.setFixedWidth(150)
+        self.slot_10.setFixedWidth(180)
         shbx.addWidget(self.slot_10)
         vbox_group_2.addLayout(shbx)
 
+        slots_hbox = QHBoxLayout()                          # Box #3 - (Contacto, Tipo contacto, Producto, Saldo, Perfil)
 
+        # slot_11
+        shbx = QHBoxLayout()
+        l = QLabel('Contacto')
+        l.setFixedWidth(115)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
 
+        self.slot_11 = QLineEdit()
+        self.slot_11.setFixedWidth(180)
+        shbx.addWidget(self.slot_11)
+        vbox_group_3.addLayout(shbx)
 
+        # slot_12
+        shbx = QHBoxLayout()
+        l = QLabel('Tipo contacto')
+        l.setFixedWidth(115)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
 
+        self.slot_12 = QLineEdit()
+        self.slot_12.setFixedWidth(180)
+        shbx.addWidget(self.slot_12)
+        vbox_group_3.addLayout(shbx)
 
+        # slot_13
+        shbx = QHBoxLayout()
+        l = QLabel('Producto')
+        l.setFixedWidth(115)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_13 = QLineEdit()
+        self.slot_13.setFixedWidth(180)
+        shbx.addWidget(self.slot_13)
+        vbox_group_3.addLayout(shbx)
+
+        # slot_14
+        shbx = QHBoxLayout()
+        l = QLabel('Saldo')
+        l.setFixedWidth(115)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_14 = QLineEdit()
+        self.slot_14.setFixedWidth(180)
+        shbx.addWidget(self.slot_14)
+        vbox_group_3.addLayout(shbx)
+
+        # slot_15
+        shbx = QHBoxLayout()
+        l = QLabel('Perfil')
+        l.setFixedWidth(115)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_15 = QLineEdit()
+        self.slot_15.setFixedWidth(180)
+        shbx.addWidget(self.slot_15)
+        vbox_group_3.addLayout(shbx)
+
+        slots_hbox = QHBoxLayout()                          # Box #4 - (Origen fondos, Monto alerta, Actualizado, Resultado gestión, Período alerta)
+
+        # slot_16
+        shbx = QHBoxLayout()
+        l = QLabel('Origen fondos')
+        l.setFixedWidth(115)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_16 = QLineEdit()
+        self.slot_16.setFixedWidth(180)
+        shbx.addWidget(self.slot_16)
+        vbox_group_4.addLayout(shbx)
+
+        # slot_17
+        shbx = QHBoxLayout()
+        l = QLabel('Monto alerta')
+        l.setFixedWidth(115)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_17 = QLineEdit()
+        self.slot_17.setFixedWidth(180)
+        shbx.addWidget(self.slot_17)
+        vbox_group_4.addLayout(shbx)
+
+        # slot_18
+        shbx = QHBoxLayout()
+        l = QLabel('Actualizado')
+        l.setFixedWidth(115)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_18 = QLineEdit()
+        self.slot_18.setFixedWidth(180)
+        shbx.addWidget(self.slot_18)
+        vbox_group_4.addLayout(shbx)
+
+        # slot_19
+        shbx = QHBoxLayout()
+        l = QLabel('Resultado gestión')
+        l.setFixedWidth(115)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_19 = QLineEdit()
+        self.slot_19.setFixedWidth(180)
+        shbx.addWidget(self.slot_19)
+        vbox_group_4.addLayout(shbx)
+
+        # slot_20
+        shbx = QHBoxLayout()
+        l = QLabel('Período alerta')
+        l.setFixedWidth(115)
+        l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        shbx.addWidget(l)
+
+        self.slot_20 = QLineEdit()
+        self.slot_20.setFixedWidth(180)
+        shbx.addWidget(self.slot_20)
+        vbox_group_4.addLayout(shbx)
+
+        t = QLabel('Archivos adjuntos')
+        t.setStyleSheet('margin-top: 20px; padding: 2px; padding-top: 15px; background: #1a1a1a; color: #bfffc6; font-size: 17px; border-radius: 3px;')
+        t.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        _scroll_widget.addWidget(t)
+
+        hbox = QHBoxLayout()
+        _scroll_widget.addLayout(hbox)
+
+        t = QLabel('Creado')
+        t.setFixedWidth(150)
+        t.setStyleSheet('padding: 2px; padding-top: 12px; background: #1a1a1a; color: #bfffc6; border-bottom: 1px solid #bfffc6; border-radius: 3px;')
+        t.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        hbox.addWidget(t)
+
+        t = QLabel('Usuario')
+        t.setFixedWidth(200)
+        t.setStyleSheet('padding: 2px; padding-top: 12px; background: #1a1a1a; color: #bfffc6; border-bottom: 1px solid #bfffc6; border-radius: 3px;')
+        t.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        hbox.addWidget(t)
+
+        t = QLabel('Título del archivo')
+        t.setFixedWidth(375)
+        t.setStyleSheet('padding: 2px; padding-top: 12px; background: #1a1a1a; color: #bfffc6; border-bottom: 1px solid #bfffc6; border-radius: 3px;')
+        t.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        hbox.addWidget(t)
+
+        t = QLabel('Tamaño')
+        t.setFixedWidth(120)
+        t.setStyleSheet('padding: 2px; padding-top: 12px; background: #1a1a1a; color: #bfffc6; border-bottom: 1px solid #bfffc6; border-radius: 3px;')
+        t.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        hbox.addWidget(t)
+
+        t = QLabel('Acciones')
+        t.setFixedWidth(400)
+        t.setStyleSheet('padding: 2px; padding-top: 12px; background: #1a1a1a; color: #bfffc6; border-bottom: 1px solid #bfffc6; border-radius: 3px;')
+        t.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        hbox.addWidget(t)
+
+        hbox.addStretch()
+
+        self.attached_files_area = QVBoxLayout()
+
+        # self.attached_files_area ↓↓
+            # attached_files_area here...
+        l = QLabel("To display attached files's area")
+        l.setStyleSheet('padding: 4px; color: #ff0;')
+        self.attached_files_area.addWidget(l)
+        # self.attached_files_area ↑↑
+        
+        _scroll_widget.addLayout(self.attached_files_area)
+
+        self.attach_new_file = QPushButton('+ Adjuntar archivo nuevo')
+        self.attach_new_file.setObjectName('attach-new-file')
+        self.attach_new_file.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        gbox = QHBoxLayout()
+        gbox.addWidget(self.attach_new_file)
+        gbox.addStretch()
+
+        _scroll_widget.addLayout(gbox)
+
+        # Remark panel
+        hbox = QHBoxLayout()
+        l = QLabel('Comentarios')
+        l.setFixedWidth(80)
+
+        self.remark_pannel = QPlainTextEdit()
+        self.remark_pannel.setPlaceholderText('*')
+        self.remark_pannel.setObjectName('remark-pannel')
+        self.remark_pannel.setFixedHeight(130)
+
+        hbox.addWidget(l)
+        hbox.addWidget(self.remark_pannel)
+        _scroll_widget.addLayout(hbox)
+
+        hbox = QHBoxLayout()
+
+        self.end_deal_read = QPushButton('Inspeccionar')
+        self.end_deal_create = QPushButton('Guardar')
+        self.end_deal_update = QPushButton('Actualizar')
+        self.end_deal_delete = QPushButton('Eliminar')
+
+        hbox.addWidget(self.end_deal_read)
+        hbox.addWidget(self.end_deal_create)
+        hbox.addWidget(self.end_deal_update)
+        hbox.addWidget(self.end_deal_delete)
+
+        hbox.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        _scroll_widget.addLayout(hbox)
 
         scroll_widget.setLayout(_scroll_widget)
         scroll.setWidget(scroll_widget)
@@ -661,7 +870,7 @@ class Main(QMainWindow, QWidget):
         # Permissions.
         self.permission_1 = QCheckBox('Inhabilitar usuario')
         self.permission_2 = QCheckBox('Procesar solicitudes uno a uno')
-        self.permission_3 = QCheckBox('Crear registros nuevos manualmente')
+        self.permission_3 = QCheckBox('Crear/eliminar registros nuevos manualmente')
         self.permission_4 = QCheckBox('Editar todos los campos')
         self.permission_5 = QCheckBox('Cargar reportes')
         self.permission_6 = QCheckBox('Asignar solicitudes')
@@ -859,9 +1068,9 @@ class Main(QMainWindow, QWidget):
         self.credential_username.setText('system.gabriel.solano')
         self.credential_password.setText('root')
         self.check_credentials.click()
-        # self.action_4_1.trigger() # Data load
-        # self.action_3_2.trigger() # Dictionary settings
-        self.action_2_2.trigger() # Request processcing
+        # self.action_4_1.trigger()                 # Data load
+        # self.action_3_2.trigger()                 # Dictionary settings
+        self.action_2_2.trigger()                   # Request processcing
 
     def echomode(self):
         if self.onoff_echo_1.isChecked(): self.credential_password.setEchoMode(QLineEdit.EchoMode.Normal)
@@ -1376,6 +1585,33 @@ if __name__ == '__main__':
                 border-radius: 5px;
                 selection-color: #050;
                 selection-background-color: #fff;
+            }
+            #attach-new-file{
+                margin-bottom: 15px;
+                padding: 0;
+                padding-bottom: 3px;
+                background: none;
+                border: none;
+                border-radius: 0;
+            }
+            #attach-new-file:hover,
+            #attach-new-file:focus{
+                margin-bottom: 15px;
+                padding: 0;
+                padding-bottom: 3px;
+                border-bottom: 1px solid #0f0;
+                color: #0f0;
+                background: none;
+            }
+            #remark-pannel{
+                padding: 5px;
+                border: none;
+                background: #fff;
+                color: #000;
+                font-size: 15px;
+                border-radius: 5px;
+                selection-color: #0f0;
+                selection-background-color: #000;
             }
         """)
     win = Main()
