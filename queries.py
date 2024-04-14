@@ -220,3 +220,19 @@ class Queries():
         self.slot_5.insertSeparator(3)
 
         internal_con.close()
+
+    def scripts_panel(self):
+        con = sqlite3.connect('hub.db')
+        cur = con.cursor()
+        cur.execute('SELECT * FROM scripts')
+        res = cur.fetchall()
+
+        self.bd_scripts = []
+        for r in res:
+            self.bd_scripts.append(list(r))
+
+
+
+
+        con.commit()
+        con.close()

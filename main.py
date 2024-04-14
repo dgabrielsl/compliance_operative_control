@@ -1114,7 +1114,7 @@ class Main(QMainWindow, QWidget):
         self.scripts_list_table = QVBoxLayout()
         self._ui_scripts.addLayout(self.scripts_list_table)
 
-        l = QLabel("To display self-build up script's area")
+        l = QLabel("No se ha creado ningún script.")
         l.setStyleSheet('padding: 4px; color: #ff0;')
         _scroll_widget.addWidget(l)
 
@@ -1177,9 +1177,22 @@ class Main(QMainWindow, QWidget):
         self.scripts_tool_body.setFixedHeight(300)
         hbox.addWidget(self.scripts_tool_body)
 
+        def new_button(layout, display_name, object_name, linked_fn, fixed_width):
+            self.object = QPushButton(display_name, clicked=linked_fn, cursor=Qt.CursorShape.PointingHandCursor)
+            self.object.setObjectName(object_name)
+            if fixed_width != 0: self.object.setFixedWidth(fixed_width)
+            layout.addWidget(self.object)
 
+        hbox = QHBoxLayout()
+        _scroll_widget.addLayout(hbox)
 
+        lbl('')
+        new_button(hbox, 'Copiar', 'scripts-tool-copy', lambda:print(self.sender().text()), 0)
+        new_button(hbox, 'Guardar', 'scripts-tool-save', lambda:print(self.sender().text()), 0)
+        new_button(hbox, 'Eliminar', 'scripts-tool-delete', lambda:print(self.sender().text()), 0)
+        new_button(hbox, 'Cancelar', 'scripts-tool-copy-cancel', lambda:print(self.sender().text()), 0)
 
+        Queries.scripts_panel(self)
 
         scroll_widget.setLayout(_scroll_widget)
         scroll.setWidget(scroll_widget)
@@ -1762,16 +1775,22 @@ if __name__ == '__main__':
                 selection-color: #0f0;
                 selection-background-color: #000;
             }
+            #scripts-tool-delete,
             #end-deal-delete{
                 background: #340003;
                 color: #f00;
                 border: 1px solid #f00;
             }
+            #scripts-tool-copy-cancel,
             #end-deal-cancel{
                 background: #342200;
                 color: #ffd600;
                 border: 1px solid #ffd600;
             }
+            scripts-tool-delete:hover,
+            scripts-tool-delete:focus,
+            #scripts-tool-copy-cancel:hover,
+            #scripts-tool-copy-cancel:focus,
             #end-deal-delete:hover,
             #end-deal-delete:focus,
             #end-deal-cancel:hover,
