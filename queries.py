@@ -1,14 +1,15 @@
 import sqlite3
 
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QComboBox
 from PyQt6.QtCore import Qt
 from datetime import datetime
 
 from text import *
 
 class Queries():
-    def __init__(self):
+    def __init__(self, select_script):
         super().__init__()
+        self.select_script = select_script(self)
 
     def get_users(self):
         self.existent_users.clear()
@@ -222,17 +223,96 @@ class Queries():
         internal_con.close()
 
     def scripts_panel(self):
+
+        if self.scripts_list_table is not None:
+            while self.scripts_list_table.count():
+                child = self.scripts_list_table.takeAt(0)
+                if child.widget() is not None: child.widget().deleteLater()
+                elif child.layout() is not None: child.layout().deleteLater()
+
         con = sqlite3.connect('hub.db')
         cur = con.cursor()
         cur.execute('SELECT * FROM scripts')
-        res = cur.fetchall()
+        self.queued_bd_scripts = cur.fetchall()
 
-        self.bd_scripts = []
-        for r in res:
-            self.bd_scripts.append(list(r))
-
-
-
+        if len(self.queued_bd_scripts) > 0:
+            for script in self.queued_bd_scripts:
+                hbox = QHBoxLayout()
+                for data in script:
+                    index = script.index(data)
+                    if index == 3:
+                        object = QPushButton(str(data), cursor=Qt.CursorShape.PointingHandCursor, clicked=self.selected_script)
+                        object.setStyleSheet('margin: 0; padding: 0; background: None; text-align: left; border: None;')
+                        object.setFixedWidth(300)
+                        hbox.addWidget(object)
+                    elif index < 5:
+                        object = QLabel(str(data))
+                        if index < 2: object.setFixedWidth(180)
+                        elif index == 2: object.setFixedWidth(200)
+                        elif index == 3: object.setFixedWidth(300)
+                        elif index == 4: object.setFixedWidth(270)
+                        hbox.addWidget(object)
+                    elif index == 6:
+                        if data == 1: object = QLabel('✅')
+                        else: object = QLabel('❌')
+                        object.setFixedWidth(150)
+                        object.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+                        hbox.addWidget(object)
+                self.scripts_list_table.addLayout(hbox)
+        else:
+            self.scripts_list_table.addWidget(QLabel('No se ha creado ningún script.'))
 
         con.commit()
         con.close()
+    
+    def display_script(self):
+        self.sender().clearFocus()
+
+        snd = self.sender().text()
+
+        con = sqlite3.connect('hub.db')
+        cur = con.cursor()
+        cur.execute('SELECT * FROM scripts WHERE header = ?', (snd,))
+        res = cur.fetchone()
+
+        self.scripts_tool_title.setText(res[3])
+        self.scripts_tool_description.setText(res[4])
+        self.scripts_tool_body.setPlainText(res[5])
+
+        if res[-1] == 0: self.scripts_tool_disable.setChecked(True)
+        else: self.scripts_tool_disable.setChecked(False)
+
+    def display_script_data(self):
+        xx = len(self.scripts_tool_title.text())
+        if xx > 0 and xx <= 100: x = '✅'
+        else: x = '❌'
+
+        yy = len(self.scripts_tool_description.text())
+        if yy <= 100: y = '✅'
+        else: y = '❌'
+
+        zz = len(self.scripts_tool_body.toPlainText())
+        if zz <= 2500: z = '✅'
+        else: z = '❌'
+
+        if self.scripts_tool_disable.isChecked(): a = '❌'
+        else: a = '✅'
+
+        self.scripts_tool_evaluation.setText(f'{x} Título: {xx}/100        •        {y} Asunto: {yy}/100        •        {z} Cuerpo: {zz}/2500        •        {a} Habilitado')
+
+    def execute_script_changes(self):
+        sender = self.sender().text()
+
+        con = sqlite3.connect('hub.db')
+        cur = con.cursor()
+        req = self.scripts_tool_title.text()
+        cur.execute('SELECT * FROM scripts WHERE header = ?', (req,))
+        res = cur.fetchone()
+
+        if res != None:
+            res = list(res)
+            if sender == 'Guardar': print(f'UPDATE: "{res[3]}"')
+            else: print(f'DELETE: "{res[3]}"')
+        else:
+            if res == None and sender == 'Guardar': print(f'CREATE: "{req}"')
+            elif res == None and sender == 'Eliminar':print(f"404: Cant't delete '{req}'")

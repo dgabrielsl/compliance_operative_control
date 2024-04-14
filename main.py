@@ -75,6 +75,12 @@ class Main(QMainWindow, QWidget):
             con.commit()
         except Exception as e: pass
 
+        # Log for scripts >>> CREATED / MODIFIED / USERNAME / HEADER / NEW_HEADER / DESCRIPTION / NEW_DESCRIPTION / BODY / NEW_BODY / STATUS / NEW_STATUS
+        try:
+            cur.execute('CREATE TABLE log_for_scripts(CREATED VARCHAR(20), MODIFIED VARCHAR(20), USERNAME VARCHAR(99), HEADER VARCHAR(100), NEW_HEADER VARCHAR(100), DESCRIPTION VARCHAR(100), NEW_DESCRIPTION VARCHAR(100), BODY VARCHAR(2500), NEW_BODY VARCHAR(2500), STATUS BOOLEAN, NEW_STATUS BOOLEAN)')
+            con.commit()
+        except Exception as e: pass
+
         con.commit()
         con.close()
 
@@ -1100,8 +1106,9 @@ class Main(QMainWindow, QWidget):
         def tt(txt,n):
             t = QLabel(txt)
             t.setFixedWidth(n)
-            t.setStyleSheet('padding: 2px; padding-top: 12px; background: #1a1a1a; color: #bfffc6; border-bottom: 1px solid #bfffc6; border-radius: 3px;')
-            t.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+            t.setStyleSheet('padding: 2px; padding-top: 8px; background: #1a1a1a; color: #bfffc6; border-bottom: 1px solid #bfffc6; border-radius: 3px;')
+            t.setAlignment(Qt.AlignmentFlag.AlignBottom | Qt.AlignmentFlag.AlignHCenter)
+            t.setFixedHeight(35)
             hbox.addWidget(t)
 
         tt('Creado',180)
@@ -1112,17 +1119,15 @@ class Main(QMainWindow, QWidget):
         tt('Habilitado',150)
 
         self.scripts_list_table = QVBoxLayout()
-        self._ui_scripts.addLayout(self.scripts_list_table)
+        _scroll_widget.addLayout(self.scripts_list_table)
 
-        l = QLabel("No se ha creado ningún script.")
-        l.setStyleSheet('padding: 4px; color: #ff0;')
-        _scroll_widget.addWidget(l)
+        Queries.scripts_panel(self)
 
         self.scripts_event_log = QPushButton('↓ Registro de cambios', clicked=lambda:self.sender().text(), cursor=Qt.CursorShape.PointingHandCursor)
         self.scripts_event_log.setFixedWidth(250)
         _scroll_widget.addWidget(self.scripts_event_log)
 
-        t = QLabel('Asistente de cambios')
+        t = QLabel('Asistente de edición')
         t.setStyleSheet('margin-top: 25px; color: #bfffc6; font-size: 17px;')
         _scroll_widget.addWidget(t)
 
@@ -1141,9 +1146,11 @@ class Main(QMainWindow, QWidget):
         self.scripts_tool_title = QLineEdit()
         self.scripts_tool_title.setMaxLength(100)
         self.scripts_tool_title.setPlaceholderText('Obligatorio*')
+        self.scripts_tool_title.textChanged.connect(self.typing_script_panel_sensor)
         hbox.addWidget(self.scripts_tool_title)
 
         self.scripts_tool_disable = QCheckBox('Deshabilitar')
+        self.scripts_tool_disable.clicked.connect(self.typing_script_panel_sensor)
         self.scripts_tool_disable.setStyleSheet('margin-left: 15px;')
         hbox.addWidget(self.scripts_tool_disable)
 
@@ -1153,7 +1160,7 @@ class Main(QMainWindow, QWidget):
 
         lbl('')
 
-        self.scripts_tool_evaluation = QLabel('❌ Título: 0/100        •        ✅ Asunto: 0/100      •      ✅ Cuerpo: 0/2500      •      ✅ Habilitado: Sí')
+        self.scripts_tool_evaluation = QLabel('❌ Título: 0/100        •        ✅ Asunto: 0/100        •        ✅ Cuerpo: 0/2500        •        ✅ Habilitado')
         hbox.addWidget(self.scripts_tool_evaluation)
 
         hbox = QHBoxLayout()
@@ -1164,6 +1171,7 @@ class Main(QMainWindow, QWidget):
 
         self.scripts_tool_description = QLineEdit()
         self.scripts_tool_description.setMaxLength(100)
+        self.scripts_tool_description.textChanged.connect(self.typing_script_panel_sensor)
         hbox.addWidget(self.scripts_tool_description)
 
         hbox = QHBoxLayout()
@@ -1175,10 +1183,11 @@ class Main(QMainWindow, QWidget):
         self.scripts_tool_body = QPlainTextEdit()
         self.scripts_tool_body.setObjectName('scripts-tool-body')
         self.scripts_tool_body.setFixedHeight(300)
+        self.scripts_tool_body.textChanged.connect(self.typing_script_panel_sensor)
         hbox.addWidget(self.scripts_tool_body)
 
-        def new_button(layout, display_name, object_name, linked_fn, fixed_width):
-            self.object = QPushButton(display_name, clicked=linked_fn, cursor=Qt.CursorShape.PointingHandCursor)
+        def new_button(layout, display_name, object_name, fixed_width):
+            self.object = QPushButton(display_name, clicked=self.crud_script_changes, cursor=Qt.CursorShape.PointingHandCursor)
             self.object.setObjectName(object_name)
             if fixed_width != 0: self.object.setFixedWidth(fixed_width)
             layout.addWidget(self.object)
@@ -1187,16 +1196,15 @@ class Main(QMainWindow, QWidget):
         _scroll_widget.addLayout(hbox)
 
         lbl('')
-        new_button(hbox, 'Copiar', 'scripts-tool-copy', lambda:print(self.sender().text()), 0)
-        new_button(hbox, 'Guardar', 'scripts-tool-save', lambda:print(self.sender().text()), 0)
-        new_button(hbox, 'Eliminar', 'scripts-tool-delete', lambda:print(self.sender().text()), 0)
-        new_button(hbox, 'Cancelar', 'scripts-tool-copy-cancel', lambda:print(self.sender().text()), 0)
-
-        Queries.scripts_panel(self)
+        new_button(hbox, 'Guardar', 'scripts-tool-save', 0)
+        new_button(hbox, 'Eliminar', 'scripts-tool-delete', 0)
+        new_button(hbox, 'Cancelar', 'scripts-tool-copy-cancel', 0)
 
         scroll_widget.setLayout(_scroll_widget)
         scroll.setWidget(scroll_widget)
         self._ui_scripts.addWidget(scroll)
+
+        self.scripts_tool_title.setFocus()
 
         # Autologin.
         self.credential_username.setText('system.gabriel.solano')
@@ -1560,6 +1568,26 @@ class Main(QMainWindow, QWidget):
         self.datetocheck = str(sel)
 
         Dates.contrast(self)
+
+    def selected_script(self):
+        Queries.display_script(self)
+        Queries.display_script_data(self)
+
+    def crud_script_changes(self):
+        if self.sender().text() == 'Cancelar':
+            self.scripts_tool_title.setText('')
+            self.scripts_tool_disable.setChecked(False)
+            self.scripts_tool_description.setText('')
+            self.scripts_tool_body.setPlainText('')
+            self.statusbar.showMessage('Campos limpiados')
+
+        elif self.scripts_tool_title.text() != '': Queries.execute_script_changes(self)
+        else: self.statusbar.showMessage('El campo de "Título" es obligatorio',2000)
+
+        Queries.display_script_data(self)
+
+    def typing_script_panel_sensor(self):
+        Queries.display_script_data(self)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
