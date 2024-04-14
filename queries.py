@@ -227,8 +227,12 @@ class Queries():
         if self.scripts_list_table is not None:
             while self.scripts_list_table.count():
                 child = self.scripts_list_table.takeAt(0)
-                if child.widget() is not None: child.widget().deleteLater()
-                elif child.layout() is not None: child.layout().deleteLater()
+                if child.widget() is not None:
+                    child.widget().deleteLater()
+                    child.widget().setParent(None)
+                elif child.layout() is not None:
+                    child.layout().deleteLater()
+                    child.layout().setParent(None)
 
         con = sqlite3.connect('hub.db')
         cur = con.cursor()
@@ -244,6 +248,7 @@ class Queries():
                         object = QPushButton(str(data), cursor=Qt.CursorShape.PointingHandCursor, clicked=self.selected_script)
                         object.setStyleSheet('margin: 0; padding: 0; background: None; text-align: left; border: None;')
                         object.setFixedWidth(300)
+                        object.setFixedHeight(20)
                         hbox.addWidget(object)
                     elif index < 5:
                         object = QLabel(str(data))
@@ -251,6 +256,7 @@ class Queries():
                         elif index == 2: object.setFixedWidth(200)
                         elif index == 3: object.setFixedWidth(300)
                         elif index == 4: object.setFixedWidth(270)
+                        object.setFixedHeight(20)
                         hbox.addWidget(object)
                     elif index == 6:
                         if data == 1: object = QLabel('✅')
@@ -311,8 +317,19 @@ class Queries():
 
         if res != None:
             res = list(res)
-            if sender == 'Guardar': print(f'UPDATE: "{res[3]}"')
-            else: print(f'DELETE: "{res[3]}"')
+            if sender == 'Guardar':
+                changes = False
+                if changes: print(f'UPDATE: "{res[3]}"')
+                else: print(f'401: "{req}" has not changes')
+            else:
+                print(f'DELETE: "{res[3]}"')
+                cur.execute('DELETE FROM scripts WHERE header = ?', (res[3],))
         else:
-            if res == None and sender == 'Guardar': print(f'CREATE: "{req}"')
-            elif res == None and sender == 'Eliminar':print(f"404: Cant't delete '{req}'")
+            if res == None and sender == 'Guardar':
+                print(f'CREATE: "{req}"')
+
+            elif res == None and sender == 'Eliminar':
+                print(f"404: Cant't delete '{req}'")
+            
+        con.commit()
+        con.close()

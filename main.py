@@ -89,7 +89,7 @@ class Main(QMainWindow, QWidget):
         self.setWindowTitle('DeskPyL - ETL Compliance Operative Control')
         self.setMinimumWidth(1400)
         # self.setMinimumHeight(550)
-        self.setMinimumHeight(900)
+        self.setMinimumHeight(1000)
         # self.showMaximized()
         # self.setWindowFlags(Qt.WindowType.WindowMaximizeButtonHint | Qt.WindowType.WindowMinimizeButtonHint)
 
@@ -1123,8 +1123,9 @@ class Main(QMainWindow, QWidget):
 
         Queries.scripts_panel(self)
 
-        self.scripts_event_log = QPushButton('↓ Registro de cambios', clicked=lambda:self.sender().text(), cursor=Qt.CursorShape.PointingHandCursor)
-        self.scripts_event_log.setFixedWidth(250)
+        self.scripts_event_log = QPushButton('↓ Registro de cambios', clicked=lambda:print(self.sender().text()), cursor=Qt.CursorShape.PointingHandCursor)
+        self.scripts_event_log.setStyleSheet('margin: 0; margin-top: 10px; padding: 3px; background: None; text-align: left; border: None; border-radius: 0;')
+        self.scripts_event_log.setFixedWidth(155)
         _scroll_widget.addWidget(self.scripts_event_log)
 
         t = QLabel('Asistente de edición')
@@ -1581,10 +1582,13 @@ class Main(QMainWindow, QWidget):
             self.scripts_tool_body.setPlainText('')
             self.statusbar.showMessage('Campos limpiados')
 
-        elif self.scripts_tool_title.text() != '': Queries.execute_script_changes(self)
+        elif self.scripts_tool_title.text() != '':
+            Queries.execute_script_changes(self)
+
         else: self.statusbar.showMessage('El campo de "Título" es obligatorio',2000)
 
         Queries.display_script_data(self)
+        Queries.scripts_panel(self)
 
     def typing_script_panel_sensor(self):
         Queries.display_script_data(self)
