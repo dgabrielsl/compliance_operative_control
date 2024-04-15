@@ -89,7 +89,7 @@ class Main(QMainWindow, QWidget):
         self.setWindowTitle('DeskPyL - ETL Compliance Operative Control')
         self.setMinimumWidth(1400)
         # self.setMinimumHeight(550)
-        self.setMinimumHeight(1000)
+        self.setMinimumHeight(900)
         # self.showMaximized()
         # self.setWindowFlags(Qt.WindowType.WindowMaximizeButtonHint | Qt.WindowType.WindowMinimizeButtonHint)
 
@@ -1211,10 +1211,10 @@ class Main(QMainWindow, QWidget):
         self.credential_username.setText('system.gabriel.solano')
         self.credential_password.setText('root')
         self.check_credentials.click()
-        # self.action_4_1.trigger()                 # Data load
+        self.action_4_1.trigger()                 # Data load
         # self.action_3_2.trigger()                 # Dictionary settings
         # self.action_2_2.trigger()                 # Request processcing
-        self.action_3_3.trigger()                   # Scripts admin
+        # self.action_3_3.trigger()                   # Scripts admin
 
     def echomode(self):
         if self.onoff_echo_1.isChecked(): self.credential_password.setEchoMode(QLineEdit.EchoMode.Normal)

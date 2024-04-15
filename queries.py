@@ -67,10 +67,10 @@ class Queries():
 
         if not res == None:
             if _sender == 'Guardar/Actualizar':
-                    time_mark = datetime.now().strftime('%d/%m/%Y %H:%M:%SH')
-                    rec = f'UPDATE users SET last_modified = "{time_mark}", created_by = "{__creator}", username = "{__username}", fullname = "{__fullname}", password = "{__password}", disabled_user = {self.permission_1.isChecked()}, requests_processing = {self.permission_2.isChecked()}, create_new_logs = {self.permission_3.isChecked()}, edit_all_fields = {self.permission_4.isChecked()}, data_load = {self.permission_5.isChecked()}, make_assignments = {self.permission_6.isChecked()}, make_reports = {self.permission_7.isChecked()}, admin_users = {self.permission_8.isChecked()}, edit_dict = {self.permission_9.isChecked()} WHERE username = ?'
-                    cur.execute(rec,(username,))
-                    con.commit()
+                time_mark = datetime.now().strftime('%d/%m/%Y %H:%M:%SH')
+                rec = f'UPDATE users SET last_modified = "{time_mark}", created_by = "{__creator}", username = "{__username}", fullname = "{__fullname}", password = "{__password}", disabled_user = {self.permission_1.isChecked()}, requests_processing = {self.permission_2.isChecked()}, create_new_logs = {self.permission_3.isChecked()}, edit_all_fields = {self.permission_4.isChecked()}, data_load = {self.permission_5.isChecked()}, make_assignments = {self.permission_6.isChecked()}, make_reports = {self.permission_7.isChecked()}, admin_users = {self.permission_8.isChecked()}, edit_dict = {self.permission_9.isChecked()} WHERE username = ?'
+                cur.execute(rec,(username,))
+                con.commit()
 
             elif _sender == 'Eliminar':
                 cur.execute(f'DELETE FROM users WHERE username = ?', (username,))
@@ -93,27 +93,34 @@ class Queries():
         con.close()
 
     def clean_table_list(self):
-        if self.action_table.count() > 0:
+        if self.action_table.count() is not None:
             while self.action_table.count():
                 child = self.action_table.takeAt(0)
-                if child.widget(): child.widget().deleteLater()
+                if child.widget() is not None:
+                    child.widget().deleteLater()
+                elif child.layout() is not None:
+                    while child.count():
+                        subchild = child.takeAt(0)
+                        subchild.widget().deleteLater()
+                    child.layout().deleteLater()
 
         hbox = QHBoxLayout()
 
-        def lbl_1(lbl):
+        def lbl_1(lbl, width):
             l = QLabel(lbl)
             l.setStyleSheet('padding: 3px 30px; background: #e1efe1; color: #495; border-bottom: 3px solid #495; border-radius: 3px;')
             l.setFixedHeight(25)
-            l.setFixedWidth(240)
+            # l.setFixedWidth(240)
+            l.setFixedWidth(width)
             l.setAlignment(Qt.AlignmentFlag.AlignHCenter)
             hbox.addWidget(l)
 
-        lbl_1('Solicitud')
-        lbl_1('Identificación')
-        lbl_1('Tipo de caso')
-        lbl_1('Producto')
-        lbl_1('Asignado a')
-        lbl_1('Acción')
+        lbl_1('Solicitud',120)
+        lbl_1('Identificación',150)
+        lbl_1('Tipo de caso',250)
+        lbl_1('Producto',120)
+        lbl_1('Asignado a',150)
+        lbl_1('Acción',150)
 
         hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.action_table.addLayout(hbox)
@@ -132,7 +139,7 @@ class Queries():
 
         cur.execute('SELECT helpdesk, id, class_case, product, assigned_to FROM core WHERE system_assigned_to = ?', ('Pendiente',))
 
-        res = cur.fetchmany(20)
+        res = cur.fetchmany(50)
 
         for rs in res:
             hbox = QHBoxLayout()
@@ -145,6 +152,14 @@ class Queries():
                 object.setStyleSheet('padding: 3px; background: #effaef; color: #000; border-bottom: 1px solid #050;')
                 object.setFixedHeight(25)
                 object.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+
+                if rs.index(r) == 0: object.setFixedWidth(120)
+                elif rs.index(r) == 1: object.setFixedWidth(150)
+                elif rs.index(r) == 2: object.setFixedWidth(250)
+                elif rs.index(r) == 3: object.setFixedWidth(120)
+                elif rs.index(r) == 4: object.setFixedWidth(150)
+                elif rs.index(r) == 5: object.setFixedWidth(150)
+
                 hbox.addWidget(object)
 
             cb = QComboBox()
@@ -154,6 +169,7 @@ class Queries():
             cb.addItem('Pendiente')
             cb.addItem('Seguimiento')
             cb.addItem('Completado')
+
             for fn in self.fname_users:
                 cb.addItem(fn)
 
@@ -223,16 +239,16 @@ class Queries():
         internal_con.close()
 
     def scripts_panel(self):
-
         if self.scripts_list_table is not None:
             while self.scripts_list_table.count():
                 child = self.scripts_list_table.takeAt(0)
                 if child.widget() is not None:
                     child.widget().deleteLater()
-                    child.widget().setParent(None)
                 elif child.layout() is not None:
+                    while child.count():
+                        subchild = child.takeAt(0)
+                        subchild.widget().deleteLater()
                     child.layout().deleteLater()
-                    child.layout().setParent(None)
 
         con = sqlite3.connect('hub.db')
         cur = con.cursor()
