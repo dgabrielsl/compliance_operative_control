@@ -186,4 +186,4 @@ class Cell():
                 self.insert = self.insert.replace(pattern.group(),' ')
                 pattern = re.search('  ',self.insert)
 
-        if self.insert != '' or self.insert != 0 or self.insert != '0': print(self.insert)
+        if self.insert != '' or self.insert != 0 or self.insert != '0': self.insert = ''

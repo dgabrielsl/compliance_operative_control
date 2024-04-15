@@ -1111,11 +1111,11 @@ class Main(QMainWindow, QWidget):
             t.setFixedHeight(35)
             hbox.addWidget(t)
 
-        tt('Creado',180)
-        tt('Modificado',180)
-        tt('Usuario',200)
-        tt('Script',300)
-        tt('Asunto',270)
+        tt('Creado',140)
+        tt('Modificado',140)
+        tt('Usuario',150)
+        tt('Script',330)
+        tt('Asunto',400)
         tt('Habilitado',150)
 
         self.scripts_list_table = QVBoxLayout()
@@ -1183,7 +1183,7 @@ class Main(QMainWindow, QWidget):
 
         self.scripts_tool_body = QPlainTextEdit()
         self.scripts_tool_body.setObjectName('scripts-tool-body')
-        self.scripts_tool_body.setFixedHeight(300)
+        self.scripts_tool_body.setFixedHeight(150)
         self.scripts_tool_body.textChanged.connect(self.typing_script_panel_sensor)
         hbox.addWidget(self.scripts_tool_body)
 
@@ -1196,7 +1196,10 @@ class Main(QMainWindow, QWidget):
         hbox = QHBoxLayout()
         _scroll_widget.addLayout(hbox)
 
-        lbl('')
+        l = QLabel('')
+        l.setFixedWidth(100)
+        hbox.addWidget(l)
+
         new_button(hbox, 'Guardar', 'scripts-tool-save', 0)
         new_button(hbox, 'Eliminar', 'scripts-tool-delete', 0)
         new_button(hbox, 'Cancelar', 'scripts-tool-copy-cancel', 0)

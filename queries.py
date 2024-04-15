@@ -115,9 +115,10 @@ class Queries():
             l.setAlignment(Qt.AlignmentFlag.AlignHCenter)
             hbox.addWidget(l)
 
+        lbl_1('Etiqueta de la cola',300)
         lbl_1('Solicitud',120)
         lbl_1('Identificación',150)
-        lbl_1('Tipo de caso',250)
+        lbl_1('Tipo de caso',300)
         lbl_1('Producto',120)
         lbl_1('Asignado a',150)
         lbl_1('Acción',150)
@@ -137,9 +138,9 @@ class Queries():
             for i in item:
                 self.fname_users.append(i)
 
-        cur.execute('SELECT helpdesk, id, class_case, product, assigned_to FROM core WHERE system_assigned_to = ?', ('Pendiente',))
+        cur.execute('SELECT tag_name, helpdesk, id, class_case, product, assigned_to FROM core WHERE system_assigned_to = ?', ('Pendiente',))
 
-        res = cur.fetchmany(50)
+        res = cur.fetchmany(100)
 
         for rs in res:
             hbox = QHBoxLayout()
@@ -147,18 +148,19 @@ class Queries():
             for r in rs:
                 object = QLabel(f'{r}')
 
-                if rs.index(r) == 4: name_cb = rs[0]
+                if rs.index(r) == 5: name_cb = rs[1]
 
-                object.setStyleSheet('padding: 3px; background: #effaef; color: #000; border-bottom: 1px solid #050;')
-                object.setFixedHeight(25)
-                object.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+                object.setStyleSheet('padding-left: 3px; background: #282a28; color: #fff; border-radius: 3px; font-family: Segoe UI;')
+                object.setFixedHeight(22)
+                object.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
 
-                if rs.index(r) == 0: object.setFixedWidth(120)
-                elif rs.index(r) == 1: object.setFixedWidth(150)
-                elif rs.index(r) == 2: object.setFixedWidth(250)
-                elif rs.index(r) == 3: object.setFixedWidth(120)
-                elif rs.index(r) == 4: object.setFixedWidth(150)
+                if rs.index(r) == 0: object.setFixedWidth(300)
+                elif rs.index(r) == 1: object.setFixedWidth(120)
+                elif rs.index(r) == 2: object.setFixedWidth(150)
+                elif rs.index(r) == 3: object.setFixedWidth(300)
+                elif rs.index(r) == 4: object.setFixedWidth(120)
                 elif rs.index(r) == 5: object.setFixedWidth(150)
+                elif rs.index(r) == 6: object.setFixedWidth(150)
 
                 hbox.addWidget(object)
 
@@ -263,15 +265,14 @@ class Queries():
                     if index == 3:
                         object = QPushButton(str(data), cursor=Qt.CursorShape.PointingHandCursor, clicked=self.selected_script)
                         object.setStyleSheet('margin: 0; padding: 0; background: None; text-align: left; border: None;')
-                        object.setFixedWidth(300)
+                        object.setFixedWidth(330)
                         object.setFixedHeight(20)
                         hbox.addWidget(object)
                     elif index < 5:
                         object = QLabel(str(data))
-                        if index < 2: object.setFixedWidth(180)
-                        elif index == 2: object.setFixedWidth(200)
-                        elif index == 3: object.setFixedWidth(300)
-                        elif index == 4: object.setFixedWidth(270)
+                        if index < 2: object.setFixedWidth(140)
+                        elif index == 2: object.setFixedWidth(150)
+                        elif index == 4: object.setFixedWidth(400)
                         object.setFixedHeight(20)
                         hbox.addWidget(object)
                     elif index == 6:
@@ -330,6 +331,8 @@ class Queries():
         req = self.scripts_tool_title.text()
         cur.execute('SELECT * FROM scripts WHERE header = ?', (req,))
         res = cur.fetchone()
+
+        print(res)
 
         if res != None:
             res = list(res)
