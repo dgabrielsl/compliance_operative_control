@@ -287,7 +287,7 @@ class Excel(QWidget):
 
                 for dl in self.datalake:
                     try:
-                        if dl[1] == 'Resuelta' or dl[1] == 'Cerrada' or dl[1] == 'Rechazada': status = dl[1]
+                        if dl[1] != 'Nueva' and dl[1] != 'En curso': status = dl[1]
                         else: status = 'Pendiente'
 
                         record = f'INSERT INTO core VALUES ("{timestamp}", "{tagname_str}", "{status}", "{dl[0]}", "{dl[6]}", "{dl[7]}", "{dl[13]}", "{dl[8]}", "{dl[1]}", "{dl[10]}", "{dl[14]}", "{dl[15]}", "{dl[16]}", "{dl[17]}", "{dl[18]}", "{dl[12]}", "{dl[3]}", "{dl[4]}", "{dl[11]}", "{dl[5]}", "{dl[9]}", "{dl[2]}", "{dl[19]}")'

@@ -183,6 +183,7 @@ class Queries():
 
             if res == 25: break
 
+        con.commit()
         con.close()
 
     def write_changes(self):

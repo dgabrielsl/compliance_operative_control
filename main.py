@@ -1028,10 +1028,13 @@ class Main(QMainWindow, QWidget):
 
         self.type_filter_param = QLineEdit()
         self.type_filter_param.setObjectName('type-filter-param')
+        self.type_filter_param.setPlaceholderText('Número de HD')
         self.type_filter_param.setFixedWidth(200)
+        only_int = QIntValidator()
+        self.type_filter_param.setValidator(only_int)
 
-        self.apply_filters = QPushButton('Buscar', clicked=lambda:print(self.sender().text()), cursor=Qt.CursorShape.PointingHandCursor)
-        self.clean_filters = QPushButton('Limpiar', clicked=lambda:print(self.sender().text()), cursor=Qt.CursorShape.PointingHandCursor)
+        self.apply_filters = QPushButton('Buscar', clicked=self.manage_action_table_saving_ev, cursor=Qt.CursorShape.PointingHandCursor)
+        self.clean_filters = QPushButton('Limpiar', clicked=self.manage_action_table_saving_ev, cursor=Qt.CursorShape.PointingHandCursor)
 
         hbox.addWidget(self.type_filter_param)
         hbox.addWidget(self.apply_filters)
@@ -1514,10 +1517,23 @@ class Main(QMainWindow, QWidget):
         Queries.get_users(self)
 
     def manage_action_table_saving_ev(self):
-        Queries.write_changes(self)
-        Queries.clean_table_list(self)
-        Queries.action_table_list(self)
-        self.statusbar.showMessage('Cambios aplicados correctamente',3000)
+        self.btn_sender = self.sender().text()
+
+        if self.btn_sender == '↑↓ Guardar':
+            Queries.write_changes(self)
+            Queries.clean_table_list(self)
+            Queries.action_table_list(self)
+            self.statusbar.showMessage('Cambios aplicados correctamente',3000)
+
+        elif self.btn_sender == 'Buscar':
+            Queries.clean_table_list(self)
+            Queries.action_table_list(self)
+            self.statusbar.showMessage(f'Buscar {self.type_filter_param.text()}',3000)
+
+        else:
+            Queries.clean_table_list(self)
+            Queries.action_table_list(self)
+            self.statusbar.showMessage('Deshacer filtro',3000)
 
     def load_books_search(self):
         if self.sender().text() == '+ SYSDE':
