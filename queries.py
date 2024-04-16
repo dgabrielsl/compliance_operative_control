@@ -110,7 +110,6 @@ class Queries():
             l = QLabel(lbl)
             l.setStyleSheet('padding: 3px 30px; background: #e1efe1; color: #495; border-bottom: 3px solid #495; border-radius: 3px;')
             l.setFixedHeight(25)
-            # l.setFixedWidth(240)
             l.setFixedWidth(width)
             l.setAlignment(Qt.AlignmentFlag.AlignHCenter)
             hbox.addWidget(l)
@@ -127,9 +126,9 @@ class Queries():
         self.action_table.addLayout(hbox)
 
     def action_table_list(self):
-        if self.type_filter_param.text() == '':
-            self.type_filter_param.setText('566709')
-            self.type_filter_param.setText('566520')
+        # if self.type_filter_param.text() == '':
+        #     self.type_filter_param.setText('566709')
+        #     self.type_filter_param.setText('566520')
 
         con = sqlite3.connect('hub.db')
         cur = con.cursor()
@@ -173,7 +172,7 @@ class Queries():
 
         def none_of_logs():
             hbox = QHBoxLayout()
-            l = QLabel('No hay registros en cola pendientes de asignar.')
+            l = QLabel('No hay registros para mostrar.')
             l.setStyleSheet('padding-top: 15px; color: #444; font-style: italic; font-size: 15px;')
             hbox.addWidget(l)
             hbox.setAlignment(Qt.AlignmentFlag.AlignHCenter)
@@ -242,14 +241,17 @@ class Queries():
         cur = con.cursor()
 
         for item in self.cbox_collector:
-            if item.currentText() != 'Pendiente':
-                write = f'UPDATE core SET system_assigned_to = "{item.currentText()}" WHERE helpdesk = {item.objectName()}'
-                cur.execute(write)
+            # if item.currentText() != 'Pendiente':
+            write = f'UPDATE core SET system_assigned_to = "{item.currentText()}" WHERE helpdesk = {item.objectName()}'
+            cur.execute(write)
 
-                time_mark = datetime.now().strftime('%d/%m/%Y %H:%M:%SH')
-                description = f'Cambio de asignación / [Pendiente] → [{item.currentText()}]'
-                write = f'INSERT INTO tracelog VALUES ("{item.objectName()}", "{time_mark}", "{self.connected_user[0]}", "{description}")'
-                cur.execute(write)
+            time_mark = datetime.now().strftime('%d/%m/%Y %H:%M:%SH')
+            description = f'Cambio de asignación / [Pendiente] → [{item.currentText()}]'
+            write = f'INSERT INTO tracelog VALUES ("{item.objectName()}", "{time_mark}", "{self.connected_user[0]}", "{description}")'
+            cur.execute(write)
+
+        con.commit()
+        con.close()
 
         if self.action_table.count() > 0:
             while self.action_table.count():
@@ -258,9 +260,6 @@ class Queries():
                     subchild = child.takeAt(0)
                     subchild.widget().deleteLater()
                 child.deleteLater()
-
-        con.commit()
-        con.close()
 
     def fill_assigned_to(self):
         self.slot_5.clear()

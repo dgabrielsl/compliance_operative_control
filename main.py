@@ -1525,13 +1525,14 @@ class Main(QMainWindow, QWidget):
             Queries.clean_table_list(self)
             Queries.action_table_list(self)
             self.statusbar.showMessage('Cambios aplicados correctamente',3000)
+            self.type_filter_param.setText('')
 
         elif self.btn_sender == 'Buscar':
             if self.type_filter_param.text() != '':
                 self.statusbar.showMessage(f'Buscando {self.type_filter_param.text()}',3000)
                 Queries.clean_table_list(self)
                 Queries.action_table_list(self)
-                self.statusbar.showMessage(f'Buscar {self.type_filter_param.text()}',3000)
+                self.statusbar.showMessage(f'Mostrando los resultados para la búsqueda: {self.type_filter_param.text()}',3000)
             else: self.statusbar.showMessage('Por favor indique el número de solicitud HD a consultar',3000)
 
         else:
