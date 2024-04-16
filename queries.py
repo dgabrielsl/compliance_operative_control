@@ -1,6 +1,6 @@
 import sqlite3
 
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QComboBox
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QComboBox, QWidgetAction
 from PyQt6.QtCore import Qt
 from datetime import datetime
 
@@ -127,6 +127,10 @@ class Queries():
         self.action_table.addLayout(hbox)
 
     def action_table_list(self):
+        if self.type_filter_param.text() == '':
+            self.type_filter_param.setText('566709')
+            self.type_filter_param.setText('566520')
+
         con = sqlite3.connect('hub.db')
         cur = con.cursor()
 
@@ -136,52 +140,90 @@ class Queries():
 
         for item in fname_users:
             for i in item:
+                if i == 'Gabriel Solano': continue
                 self.fname_users.append(i)
 
-        cur.execute('SELECT tag_name, helpdesk, id, class_case, product, assigned_to FROM core WHERE system_assigned_to = ?', ('Pendiente',))
+        try: _sender = self.sender().text()
+        except Exception as e: _sender = ''
 
-        res = cur.fetchmany(100)
+        self.queued_by = [False]
 
-        for rs in res:
+        if _sender == 'Buscar':
+            query = self.type_filter_param.text()
+
+            if query != '':
+                cur.execute('SELECT tag_name, helpdesk, id, class_case, product, assigned_to, system_assigned_to FROM core WHERE helpdesk = ?', (query,))
+                res_group = cur.fetchone()
+                if res_group != None:
+                    self.queued_by[0] = True
+                    self.queued_by.append(res_group[-1])
+
+                    res_group = list(res_group)
+                    res_group.pop()
+                    res = []
+                    res.append(res_group)
+                    self.len_res = len(res)
+
+                else: res = None
+
+        else:
+            cur.execute('SELECT tag_name, helpdesk, id, class_case, product, assigned_to FROM core WHERE system_assigned_to = ?', ('Pendiente',))
+            res = cur.fetchmany(100)
+            self.len_res = len(res)
+
+        def none_of_logs():
             hbox = QHBoxLayout()
-
-            for r in rs:
-                object = QLabel(f'{r}')
-
-                if rs.index(r) == 5: name_cb = rs[1]
-
-                object.setStyleSheet('padding-left: 3px; background: #282a28; color: #fff; border-radius: 3px; font-family: Segoe UI;')
-                object.setFixedHeight(22)
-                object.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-
-                if rs.index(r) == 0: object.setFixedWidth(300)
-                elif rs.index(r) == 1: object.setFixedWidth(120)
-                elif rs.index(r) == 2: object.setFixedWidth(150)
-                elif rs.index(r) == 3: object.setFixedWidth(300)
-                elif rs.index(r) == 4: object.setFixedWidth(120)
-                elif rs.index(r) == 5: object.setFixedWidth(150)
-                elif rs.index(r) == 6: object.setFixedWidth(150)
-
-                hbox.addWidget(object)
-
-            cb = QComboBox()
-            cb.setCurrentIndex(0)
-            cb.setObjectName(name_cb)
-            cb.setCursor(Qt.CursorShape.PointingHandCursor)
-            cb.addItem('Pendiente')
-            cb.addItem('Seguimiento')
-            cb.addItem('Completado')
-
-            for fn in self.fname_users:
-                cb.addItem(fn)
-
-            hbox.addWidget(cb)
-
+            l = QLabel('No hay registros en cola pendientes de asignar.')
+            l.setStyleSheet('padding-top: 15px; color: #444; font-style: italic; font-size: 15px;')
+            hbox.addWidget(l)
+            hbox.setAlignment(Qt.AlignmentFlag.AlignHCenter)
             self.action_table.addLayout(hbox)
-            self.action_table.setAlignment(Qt.AlignmentFlag.AlignTop)
-            hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-            if res == 25: break
+        try:
+            if self.len_res > 0:
+                for rs in res:
+                    hbox = QHBoxLayout()
+
+                    for r in rs:
+                        object = QLabel(f'{r}')
+
+                        if rs.index(r) == 5: name_cb = rs[1]
+
+                        object.setStyleSheet('padding-left: 3px; background: #282a28; color: #fff; border-radius: 3px; font-family: Segoe UI;')
+                        object.setFixedHeight(22)
+                        object.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+
+                        if rs.index(r) == 0: object.setFixedWidth(300)
+                        elif rs.index(r) == 1: object.setFixedWidth(120)
+                        elif rs.index(r) == 2: object.setFixedWidth(150)
+                        elif rs.index(r) == 3: object.setFixedWidth(300)
+                        elif rs.index(r) == 4: object.setFixedWidth(120)
+                        elif rs.index(r) == 5: object.setFixedWidth(150)
+                        elif rs.index(r) == 6: object.setFixedWidth(150)
+
+                        hbox.addWidget(object)
+
+                    cb = QComboBox()
+                    cb.setCurrentIndex(0)
+                    cb.setObjectName(name_cb)
+                    cb.setCursor(Qt.CursorShape.PointingHandCursor)
+
+                    cb.addItems(['Pendiente','Seguimiento','Resuelta','Rechazada','Cerrada','Comentarios Finales'])
+
+                    if self.queued_by[0] == True: cb.setCurrentText(self.queued_by[1])
+
+                    for fn in self.fname_users:
+                        cb.addItem(fn)
+
+                    hbox.addWidget(cb)
+
+                    self.action_table.addLayout(hbox)
+                    self.action_table.setAlignment(Qt.AlignmentFlag.AlignTop)
+                    hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+            else: none_of_logs()
+
+        except Exception as e: none_of_logs()
 
         con.commit()
         con.close()

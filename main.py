@@ -267,6 +267,7 @@ class Main(QMainWindow, QWidget):
         self.user_location = QLabel('INGRESAR CREDENCIALES')
         self.user_location.setObjectName('user-location')
         self.user_location.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+
         _site_info.addWidget(self.user_location)
 
         self._body = QStackedLayout()
@@ -1526,14 +1527,18 @@ class Main(QMainWindow, QWidget):
             self.statusbar.showMessage('Cambios aplicados correctamente',3000)
 
         elif self.btn_sender == 'Buscar':
-            Queries.clean_table_list(self)
-            Queries.action_table_list(self)
-            self.statusbar.showMessage(f'Buscar {self.type_filter_param.text()}',3000)
+            if self.type_filter_param.text() != '':
+                self.statusbar.showMessage(f'Buscando {self.type_filter_param.text()}',3000)
+                Queries.clean_table_list(self)
+                Queries.action_table_list(self)
+                self.statusbar.showMessage(f'Buscar {self.type_filter_param.text()}',3000)
+            else: self.statusbar.showMessage('Por favor indique el número de solicitud HD a consultar',3000)
 
         else:
             Queries.clean_table_list(self)
             Queries.action_table_list(self)
             self.statusbar.showMessage('Deshacer filtro',3000)
+            self.type_filter_param.setText('')
 
     def load_books_search(self):
         if self.sender().text() == '+ SYSDE':
