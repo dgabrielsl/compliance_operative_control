@@ -5,6 +5,7 @@ from PyQt6.QtCore import Qt
 from datetime import datetime
 
 from text import *
+from scripts import *
 
 class Queries():
     def __init__(self, select_script):
@@ -174,6 +175,7 @@ class Queries():
             hbox = QHBoxLayout()
             l = QLabel('No hay registros para mostrar.')
             l.setStyleSheet('padding-top: 15px; color: #444; font-style: italic; font-size: 15px;')
+            l.setFixedHeight(40)
             hbox.addWidget(l)
             hbox.setAlignment(Qt.AlignmentFlag.AlignHCenter)
             self.action_table.addLayout(hbox)
@@ -306,7 +308,7 @@ class Queries():
                     index = script.index(data)
                     if index == 3:
                         object = QPushButton(str(data), cursor=Qt.CursorShape.PointingHandCursor, clicked=self.selected_script)
-                        object.setStyleSheet('margin: 0; padding: 0; background: None; text-align: left; border: None;')
+                        object.setStyleSheet('margin: 0; padding: 0; background: None; font-size: 12px; text-align: left; border: None;')
                         object.setFixedWidth(330)
                         object.setFixedHeight(20)
                         hbox.addWidget(object)
@@ -314,16 +316,20 @@ class Queries():
                         object = QLabel(str(data))
                         if index < 2: object.setFixedWidth(140)
                         elif index == 2: object.setFixedWidth(150)
-                        elif index == 4: object.setFixedWidth(400)
+                        elif index == 4: object.setFixedWidth(350)
                         object.setFixedHeight(20)
+                        object.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
                         hbox.addWidget(object)
                     elif index == 6:
                         if data == 1: object = QLabel('✅')
                         else: object = QLabel('❌')
                         object.setFixedWidth(150)
-                        object.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+                        object.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
                         hbox.addWidget(object)
+
+                hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
                 self.scripts_list_table.addLayout(hbox)
+
         else:
             self.scripts_list_table.addWidget(QLabel('No se ha creado ningún script.'))
 
@@ -387,10 +393,16 @@ class Queries():
                 cur.execute('DELETE FROM scripts WHERE header = ?', (res[3],))
         else:
             if res == None and sender == 'Guardar':
-                print(f'CREATE: "{req}"')
+                Scripts.make_new(self)
+                # rec = f'INSERT INTO scripts VALUES ({self.new_script_record})'
+                cur.execute(self.new_script_record)
 
             elif res == None and sender == 'Eliminar':
-                print(f"404: Cant't delete '{req}'")
-            
+                QMessageBox.information(self,
+                    'DeskPyL - Administrar scripts',
+                    f'No se puede elminar el script "{self.scripts_tool_title.text()}", ya que no existe.',
+                    QMessageBox.StandardButton.Ok,
+                    QMessageBox.StandardButton.Ok)
+
         con.commit()
         con.close()

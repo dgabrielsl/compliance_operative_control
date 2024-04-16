@@ -1119,7 +1119,7 @@ class Main(QMainWindow, QWidget):
         tt('Modificado',140)
         tt('Usuario',150)
         tt('Script',330)
-        tt('Asunto',400)
+        tt('Asunto',350)
         tt('Habilitado',150)
 
         self.scripts_list_table = QVBoxLayout()
@@ -1198,7 +1198,6 @@ class Main(QMainWindow, QWidget):
             layout.addWidget(self.object)
 
         hbox = QHBoxLayout()
-        _scroll_widget.addLayout(hbox)
 
         l = QLabel('')
         l.setFixedWidth(100)
@@ -1207,6 +1206,8 @@ class Main(QMainWindow, QWidget):
         new_button(hbox, 'Guardar', 'scripts-tool-save', 0)
         new_button(hbox, 'Eliminar', 'scripts-tool-delete', 0)
         new_button(hbox, 'Cancelar', 'scripts-tool-copy-cancel', 0)
+
+        _scroll_widget.addLayout(hbox)
 
         scroll_widget.setLayout(_scroll_widget)
         scroll.setWidget(scroll_widget)
@@ -1218,10 +1219,10 @@ class Main(QMainWindow, QWidget):
         self.credential_username.setText('system.gabriel.solano')
         self.credential_password.setText('root')
         self.check_credentials.click()
-        self.action_4_1.trigger()                 # Data load
+        # self.action_4_1.trigger()                 # Data load
         # self.action_3_2.trigger()                 # Dictionary settings
         # self.action_2_2.trigger()                 # Request processcing
-        # self.action_3_3.trigger()                   # Scripts admin
+        self.action_3_3.trigger()                   # Scripts admin
 
     def echomode(self):
         if self.onoff_echo_1.isChecked(): self.credential_password.setEchoMode(QLineEdit.EchoMode.Normal)
@@ -1609,6 +1610,7 @@ class Main(QMainWindow, QWidget):
 
         elif self.scripts_tool_title.text() != '':
             Queries.execute_script_changes(self)
+            self.statusbar.showMessage('Cambios aplicados correctamente')
 
         else: self.statusbar.showMessage('El campo de "Título" es obligatorio',2000)
 
