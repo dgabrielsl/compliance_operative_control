@@ -77,7 +77,7 @@ class Main(QMainWindow, QWidget):
 
         # Log for scripts >>> CREATED / MODIFIED / USERNAME / HEADER / NEW_HEADER / DESCRIPTION / NEW_DESCRIPTION / BODY / NEW_BODY / STATUS / NEW_STATUS
         try:
-            cur.execute('CREATE TABLE log_for_scripts(CREATED VARCHAR(20), MODIFIED VARCHAR(20), USERNAME VARCHAR(99), HEADER VARCHAR(100), NEW_HEADER VARCHAR(100), DESCRIPTION VARCHAR(100), NEW_DESCRIPTION VARCHAR(100), BODY VARCHAR(2500), NEW_BODY VARCHAR(2500), STATUS BOOLEAN, NEW_STATUS BOOLEAN)')
+            cur.execute('CREATE TABLE log_for_scripts(CREATED VARCHAR(20), MODIFIED VARCHAR(20), USERNAME VARCHAR(99), HEADER VARCHAR(100), NEW_HEADER VARCHAR(100), DESCRIPTION VARCHAR(100), NEW_DESCRIPTION VARCHAR(100), BODY VARCHAR(2500), NEW_BODY VARCHAR(2500), STATUS VARCHAR(1), NEW_STATUS VARCHAR(1), DETAILS VARCHAR(30))')
             con.commit()
         except Exception as e: pass
 
@@ -1601,16 +1601,31 @@ class Main(QMainWindow, QWidget):
         Queries.display_script_data(self)
 
     def crud_script_changes(self):
-        if self.sender().text() == 'Cancelar':
+        def cancel_btn():
             self.scripts_tool_title.setText('')
             self.scripts_tool_disable.setChecked(False)
             self.scripts_tool_description.setText('')
             self.scripts_tool_body.setPlainText('')
             self.statusbar.showMessage('Campos limpiados')
 
+        if self.sender().text() == 'Cancelar':
+            cancel_btn()
+
         elif self.scripts_tool_title.text() != '':
+            self.pre_created = datetime.now().strftime('%Y/%m/%d %H:%M:%SH')
+            self.pre_creator = self.connected_user[-1]
+            self.pre_header = self.scripts_tool_title.text()
+            self.pre_description = self.scripts_tool_description.text()
+            self.pre_body = self.scripts_tool_body.toPlainText()
+            if self.scripts_tool_disable.isChecked(): self.pre_status = 0
+            else: self.pre_status = 1
+
+            self.pre_grouped = [self.pre_created, self.pre_creator, self.pre_header, self.pre_description, self.pre_body, self.pre_status]
+
             Queries.execute_script_changes(self)
             self.statusbar.showMessage('Cambios aplicados correctamente')
+
+            cancel_btn()
 
         else: self.statusbar.showMessage('El campo de "Título" es obligatorio',2000)
 

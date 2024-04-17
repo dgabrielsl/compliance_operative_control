@@ -127,9 +127,6 @@ class Queries():
         self.action_table.addLayout(hbox)
 
     def action_table_list(self):
-        # if self.type_filter_param.text() == '':
-        #     self.type_filter_param.setText('566709')
-        #     self.type_filter_param.setText('566520')
 
         con = sqlite3.connect('hub.db')
         cur = con.cursor()
@@ -380,22 +377,38 @@ class Queries():
         cur.execute('SELECT * FROM scripts WHERE header = ?', (req,))
         res = cur.fetchone()
 
-        print(res)
+        # For Scripts.make_update()
+        self.pull_int_dat =  self.pre_grouped[2:]
+        try: self.pull_dbo_log = list(res[3:])
+        except Exception as e: pass
 
         if res != None:
             res = list(res)
             if sender == 'Guardar':
-                changes = False
-                if changes: print(f'UPDATE: "{res[3]}"')
-                else: print(f'401: "{req}" has not changes')
+                self.check_script_changes = False
+                self.check_script_changes = True
+
+                if self.check_script_changes:
+                    Scripts.make_update(self)
+
+                else:
+                    print(f'401: "{req}" has not changes')
+
             else:
-                print(f'DELETE: "{res[3]}"')
+                Scripts.make_del(self)
                 cur.execute('DELETE FROM scripts WHERE header = ?', (res[3],))
+
+                QMessageBox.information(self,
+                    'DeskPyL - Administrar scripts',
+                    f'Se ha eliminado el script "{self.scripts_tool_title.text()}" de los registros.',
+                    QMessageBox.StandardButton.Ok,
+                    QMessageBox.StandardButton.Ok)
+
         else:
             if res == None and sender == 'Guardar':
                 Scripts.make_new(self)
-                # rec = f'INSERT INTO scripts VALUES ({self.new_script_record})'
                 cur.execute(self.new_script_record)
+                cur.execute(self.new_script_record_log)
 
             elif res == None and sender == 'Eliminar':
                 QMessageBox.information(self,
