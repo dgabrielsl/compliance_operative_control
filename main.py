@@ -88,9 +88,9 @@ class Main(QMainWindow, QWidget):
         self.setWindowIcon(QIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_ComputerIcon)))
         self.setWindowTitle('DeskPyL - ETL Compliance Operative Control')
         self.setMinimumWidth(1400)
-        # self.setMinimumHeight(550)
-        self.setMinimumHeight(900)
-        # self.showMaximized()
+        # self.setMinimumHeight(900)
+        self.setMinimumHeight(550)
+        self.showMaximized()
         # self.setWindowFlags(Qt.WindowType.WindowMaximizeButtonHint | Qt.WindowType.WindowMinimizeButtonHint)
 
         menubar = self.menuBar()
@@ -1127,7 +1127,7 @@ class Main(QMainWindow, QWidget):
 
         Queries.scripts_panel(self)
 
-        self.scripts_event_log = QPushButton('↓ Registro de cambios', clicked=lambda:print(self.sender().text()), cursor=Qt.CursorShape.PointingHandCursor)
+        self.scripts_event_log = QPushButton('↓ Registro de cambios', clicked=self.download_scripts_events_log, cursor=Qt.CursorShape.PointingHandCursor)
         self.scripts_event_log.setStyleSheet('margin: 0; margin-top: 10px; padding: 3px; background: None; text-align: left; border: None; border-radius: 0;')
         self.scripts_event_log.setFixedWidth(155)
         _scroll_widget.addWidget(self.scripts_event_log)
@@ -1623,6 +1623,7 @@ class Main(QMainWindow, QWidget):
             self.pre_grouped = [self.pre_created, self.pre_creator, self.pre_header, self.pre_description, self.pre_body, self.pre_status]
 
             Queries.execute_script_changes(self)
+
             self.statusbar.showMessage('Cambios aplicados correctamente')
 
             cancel_btn()
@@ -1634,6 +1635,9 @@ class Main(QMainWindow, QWidget):
 
     def typing_script_panel_sensor(self):
         Queries.display_script_data(self)
+
+    def download_scripts_events_log(self):
+        Scripts.make_events_log_file(self)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

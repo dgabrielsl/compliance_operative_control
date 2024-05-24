@@ -386,13 +386,15 @@ class Queries():
             res = list(res)
             if sender == 'Guardar':
                 self.check_script_changes = False
-                self.check_script_changes = True
 
-                if self.check_script_changes:
-                    Scripts.make_update(self)
+                for i in range(len(self.pull_int_dat)):
+                    if f'{self.pull_int_dat[i]}' != f'{self.pull_dbo_log[i]}':
+                        self.check_script_changes = True
+                        break
 
-                else:
-                    print(f'401: "{req}" has not changes')
+                if self.check_script_changes: Scripts.make_update(self)
+
+                self.check_script_changes = False
 
             else:
                 Scripts.make_del(self)
