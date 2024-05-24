@@ -10,6 +10,7 @@ from PyQt6.QtCore import Qt, QDate
 from queries import *
 from excel_loads import *
 from dates import *
+from media_attachtments import *
 
 os.system('cls')
 
@@ -78,6 +79,18 @@ class Main(QMainWindow, QWidget):
         # Log for scripts >>> CREATED / MODIFIED / USERNAME / HEADER / NEW_HEADER / DESCRIPTION / NEW_DESCRIPTION / BODY / NEW_BODY / STATUS / NEW_STATUS
         try:
             cur.execute('CREATE TABLE log_for_scripts(CREATED VARCHAR(20), MODIFIED VARCHAR(20), USERNAME VARCHAR(99), HEADER VARCHAR(100), NEW_HEADER VARCHAR(100), DESCRIPTION VARCHAR(100), NEW_DESCRIPTION VARCHAR(100), BODY VARCHAR(2500), NEW_BODY VARCHAR(2500), STATUS VARCHAR(1), NEW_STATUS VARCHAR(1), DETAILS VARCHAR(30))')
+            con.commit()
+        except Exception as e: pass
+
+        # Attached files >>> CREATED / USER / FILE_NAME / EXT / SIZE
+        try:
+            cur.execute('CREATE TABLE attached_files(CREATED VARCHAR(20), USER VARCHAR(50), HD_RELATED_TO VARCHAR(20), FILE_NAME VARCHAR(300) UNIQUE, EXT VARCHAR(10), SIZE VARCHAR(20), BIN_FILE BLOB)')
+            con.commit()
+        except Exception as e: pass
+
+        # Attached files >>> CREATED / USER / FILE_NAME / EXT / SIZE / DELETED BY / DELETED DATE
+        try:
+            cur.execute('CREATE TABLE attached_files_events_log(CREATED VARCHAR(20), USER VARCHAR(50), HD_RELATED_TO VARCHAR(20), FILE_NAME VARCHAR(300) UNIQUE, EXT VARCHAR(10), SIZE VARCHAR(20), DELETED_BY VARCHAR(99), DELETED_DATE VARCHAR(20))')
             con.commit()
         except Exception as e: pass
 
@@ -728,6 +741,12 @@ class Main(QMainWindow, QWidget):
         t.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         hbox.addWidget(t)
 
+        t = QLabel('Tipo')
+        t.setFixedWidth(120)
+        t.setStyleSheet('padding: 2px; padding-top: 12px; background: #1a1a1a; color: #bfffc6; border-bottom: 1px solid #bfffc6; border-radius: 3px;')
+        t.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        hbox.addWidget(t)
+
         t = QLabel('Tamaño')
         t.setFixedWidth(120)
         t.setStyleSheet('padding: 2px; padding-top: 12px; background: #1a1a1a; color: #bfffc6; border-bottom: 1px solid #bfffc6; border-radius: 3px;')
@@ -735,7 +754,7 @@ class Main(QMainWindow, QWidget):
         hbox.addWidget(t)
 
         t = QLabel('Acciones')
-        t.setFixedWidth(400)
+        t.setFixedWidth(280)
         t.setStyleSheet('padding: 2px; padding-top: 12px; background: #1a1a1a; color: #bfffc6; border-bottom: 1px solid #bfffc6; border-radius: 3px;')
         t.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         hbox.addWidget(t)
@@ -744,16 +763,13 @@ class Main(QMainWindow, QWidget):
 
         self.attached_files_area = QVBoxLayout()
 
-        # self.attached_files_area ↓↓
-            # attached_files_area here...
-        l = QLabel("To display attached files's area")
-        l.setStyleSheet('padding: 4px; color: #ff0;')
-        self.attached_files_area.addWidget(l)
-        # self.attached_files_area ↑↑
-        
+        # l = QLabel("No hay archivos adjuntos.")
+        # l.setStyleSheet('padding: 4px; color: #aaa; font-style: italic;')
+        # self.attached_files_area.addWidget(l)
+
         _scroll_widget.addLayout(self.attached_files_area)
 
-        self.attach_new_file = QPushButton('+ Adjuntar archivo nuevo', clicked=lambda:print(self.sender().text()), cursor=Qt.CursorShape.PointingHandCursor)
+        self.attach_new_file = QPushButton('+ Adjuntar archivo nuevo', clicked=self.attacht_new_file, cursor=Qt.CursorShape.PointingHandCursor)
         self.attach_new_file.setObjectName('attach-new-file')
 
         gbox = QHBoxLayout()
@@ -780,6 +796,7 @@ class Main(QMainWindow, QWidget):
 
         self.end_deal_read = QPushButton('Inspeccionar', clicked=self.slots_crud, cursor=Qt.CursorShape.PointingHandCursor)
         self.end_deal_read.setFixedWidth(200)
+        self.end_deal_read.setDisabled(True)
 
         self.end_deal_create = QPushButton('Guardar', clicked=self.slots_crud, cursor=Qt.CursorShape.PointingHandCursor)
         self.end_deal_create.setFixedWidth(200)
@@ -1221,8 +1238,8 @@ class Main(QMainWindow, QWidget):
         self.check_credentials.click()
         # self.action_4_1.trigger()                 # Data load
         # self.action_3_2.trigger()                 # Dictionary settings
-        # self.action_2_2.trigger()                 # Request processcing
-        self.action_3_3.trigger()                   # Scripts admin
+        # self.action_3_3.trigger()                   # Scripts admin
+        self.action_2_2.trigger()                 # Request processcing
 
     def echomode(self):
         if self.onoff_echo_1.isChecked(): self.credential_password.setEchoMode(QLineEdit.EchoMode.Normal)
@@ -1638,6 +1655,9 @@ class Main(QMainWindow, QWidget):
 
     def download_scripts_events_log(self):
         Scripts.make_events_log_file(self)
+
+    def attacht_new_file(self):
+        Attacthments.get_file(self)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
