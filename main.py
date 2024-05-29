@@ -11,6 +11,7 @@ from queries import *
 from excel_loads import *
 from dates import *
 from media_attachtments import *
+from my_dashboard import *
 
 os.system('cls')
 
@@ -90,7 +91,7 @@ class Main(QMainWindow, QWidget):
 
         # Attached files >>> CREATED / USER / FILE_NAME / EXT / SIZE / DELETED BY / DELETED DATE
         try:
-            cur.execute('CREATE TABLE attached_files_events_log(CREATED VARCHAR(20), USER VARCHAR(50), HD_RELATED_TO VARCHAR(20), FILE_NAME VARCHAR(300) UNIQUE, EXT VARCHAR(10), SIZE VARCHAR(20), DELETED_BY VARCHAR(99), DELETED_DATE VARCHAR(20))')
+            cur.execute('CREATE TABLE attached_files_events_log(DATETIME VARCHAR(20), AUTHOR VARCHAR(50), HD_RELATED_TO VARCHAR(20), FILE_NAME VARCHAR(300), EXT VARCHAR(10), SIZE VARCHAR(20), ACTION VARCHAR(30))')
             con.commit()
         except Exception as e: pass
 
@@ -100,8 +101,7 @@ class Main(QMainWindow, QWidget):
     def init(self):
         self.setWindowIcon(QIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_ComputerIcon)))
         self.setWindowTitle('DeskPyL - ETL Compliance Operative Control')
-        self.setMinimumWidth(1400)
-        # self.setMinimumHeight(900)
+        self.setMinimumWidth(768)
         self.setMinimumHeight(550)
         self.showMaximized()
         # self.setWindowFlags(Qt.WindowType.WindowMaximizeButtonHint | Qt.WindowType.WindowMinimizeButtonHint)
@@ -404,6 +404,17 @@ class Main(QMainWindow, QWidget):
         self._ui_assignments = QVBoxLayout()
         self._ui_assignments.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         self.ui_assignments.setLayout(self._ui_assignments)
+
+        # scroll = QScrollArea()
+        # scroll_widget = QWidget()
+        # _scroll_widget = QVBoxLayout()
+        # self.my_dahsboard = QVBoxLayout()
+        # _scroll_widget.addLayout(self.my_dahsboard)
+        # Dashboard.clear_layouts(self)
+        # Dashboard.get_requests(self)
+        # scroll_widget.setLayout(_scroll_widget)
+        # scroll.setWidget(scroll_widget)
+        # self._ui_assignments.addWidget(scroll)
 
         self._body.addWidget(self.ui_assignments)
 
@@ -763,14 +774,15 @@ class Main(QMainWindow, QWidget):
 
         self.attached_files_area = QVBoxLayout()
 
-        # l = QLabel("No hay archivos adjuntos.")
-        # l.setStyleSheet('padding: 4px; color: #aaa; font-style: italic;')
-        # self.attached_files_area.addWidget(l)
+        l = QLabel("No hay archivos adjuntos.")
+        l.setStyleSheet('padding: 4px; color: #aaa; font-style: italic;')
+        self.attached_files_area.addWidget(l)
 
         _scroll_widget.addLayout(self.attached_files_area)
 
         self.attach_new_file = QPushButton('+ Adjuntar archivo nuevo', clicked=self.attacht_new_file, cursor=Qt.CursorShape.PointingHandCursor)
         self.attach_new_file.setObjectName('attach-new-file')
+        # self.attach_new_file.setDisabled(True)
 
         gbox = QHBoxLayout()
         gbox.addWidget(self.attach_new_file)
@@ -1238,8 +1250,9 @@ class Main(QMainWindow, QWidget):
         self.check_credentials.click()
         # self.action_4_1.trigger()                 # Data load
         # self.action_3_2.trigger()                 # Dictionary settings
-        # self.action_3_3.trigger()                   # Scripts admin
-        self.action_2_2.trigger()                 # Request processcing
+        # self.action_3_3.trigger()                 # Scripts admin
+        # self.action_2_2.trigger()                 # Request processcing
+        self.action_2_1.trigger()                 # My dashboard
 
     def echomode(self):
         if self.onoff_echo_1.isChecked(): self.credential_password.setEchoMode(QLineEdit.EchoMode.Normal)
@@ -1363,6 +1376,8 @@ class Main(QMainWindow, QWidget):
         if _sender == ('&Mis asignaciones'):
             self.user_location.setText('MIS ASIGNACIONES')
             self._body.setCurrentIndex(2)
+            Dashboard.clear_layouts(self)
+            Dashboard.get_requests(self)
 
         elif _sender == ('&Registrar solicitud'):
             self.user_location.setText('PROCESAR SOLICITUD')
@@ -1430,7 +1445,7 @@ class Main(QMainWindow, QWidget):
             res = cur.fetchone()
 
             self.queued_user = list(res)
-            print(self.queued_user)
+            # print(self.queued_user)
 
             self.metadata_1.setText(self.queued_user[2])
             self.metadata_2.setText(self.queued_user[0])
@@ -1453,7 +1468,7 @@ class Main(QMainWindow, QWidget):
             if self.queued_user[8] == 1: self.permission_3.setChecked(True)
             else: self.permission_3.setChecked(False)
 
-            # Jump EDIT_ALL_FIELDS
+            # EDIT_ALL_FIELDS
             if self.queued_user[9] == 1: self.permission_4.setChecked(True)
             else: self.permission_4.setChecked(False)
 
@@ -1561,17 +1576,26 @@ class Main(QMainWindow, QWidget):
 
     def load_books_search(self):
         if self.sender().text() == '+ SYSDE':
-            try: 
-                Excel.load_sysde(self)
+            try: Excel.load_sysde(self)
             except Exception as e:
                 print(e)
-                QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de SYSDE\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+                QMessageBox.information(
+                    self,
+                    'DeskPyL',
+                    f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de SYSDE\t\t\t\n',
+                    QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok
+                )
         else:
-            # try:
-                Excel.load_hds(self)
-            # except Exception as e:
-            #     print(e)
-            #     QMessageBox.information(self, 'DeskPyL', f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n', QMessageBox.StandardButton.Ok, QMessageBox.StandardButton.Ok)
+            try: Excel.load_hds(self)
+            except Exception as e:
+                print(e)
+                QMessageBox.information(
+                    self,
+                    'DeskPyL',
+                    f'\nPor favor verifique el reporte de Excel, debe cargar un reporte de datos de HDs\t\t\t\n',
+                    QMessageBox.StandardButton.Ok,
+                    QMessageBox.StandardButton.Ok
+                )
 
     def load_books_saving(self):
         if self.sender().objectName() == 'load_sysde_btn_save':
@@ -1657,7 +1681,8 @@ class Main(QMainWindow, QWidget):
         Scripts.make_events_log_file(self)
 
     def attacht_new_file(self):
-        Attacthments.get_file(self)
+        # Attacthments.get_file(self)
+        self.statusbar.showMessage('No configurado',3000)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
@@ -1902,6 +1927,9 @@ if __name__ == '__main__':
                 color: #000;
                 border: none;
                 border-radius: 0;
+            }
+            #reqs-dboard{
+                border: 1px solid #fff;
             }
         """)
     win = Main()
