@@ -1,4 +1,3 @@
-import re
 from datetime import datetime
 from PyQt6.QtCore import QDate
 
@@ -11,4 +10,5 @@ class Dates():
         else:
             self.datetocheck = self.datetocheck.split('-')
             self.datetocheck = f'{self.datetocheck[2]}/{self.datetocheck[1]}/{self.datetocheck[0]}'
-            print(self.datetocheck)
+
+        print(f'self.datetocheck // {self.datetocheck}')

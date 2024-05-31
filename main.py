@@ -472,6 +472,7 @@ class Main(QMainWindow, QWidget):
 
         self.slot_1 = QLineEdit()
         self.slot_1.setFixedWidth(180)
+        self.slot_1.setReadOnly(True)
         shbx.addWidget(self.slot_1)
         vbox_group_1.addLayout(shbx)
 
@@ -574,6 +575,7 @@ class Main(QMainWindow, QWidget):
 
         self.slot_9 = QLineEdit()
         self.slot_9.setFixedWidth(180)
+        self.slot_9.setReadOnly(True)
         shbx.addWidget(self.slot_9)
         vbox_group_2.addLayout(shbx)
 
@@ -595,7 +597,7 @@ class Main(QMainWindow, QWidget):
         # self.slot_10.calendarWidget().setSelectedDate(QDate.currentDate())
         self.slot_10.calendarWidget().selectionChanged.connect(self.date_selected)
 
-        self.slot_10_today = QPushButton('&Borrar', clicked=self.today)
+        self.slot_10_today = QPushButton('&Borrar',clicked=self.today)
         self.slot_10_today.setObjectName('slot-10-today')
         self.slot_10.calendarWidget().layout().addWidget(self.slot_10_today)
 
@@ -649,6 +651,7 @@ class Main(QMainWindow, QWidget):
 
         self.slot_14 = QLineEdit()
         self.slot_14.setFixedWidth(180)
+        self.slot_14.setDisabled(True)
         shbx.addWidget(self.slot_14)
         vbox_group_3.addLayout(shbx)
 
@@ -699,6 +702,7 @@ class Main(QMainWindow, QWidget):
 
         self.slot_18 = QLineEdit()
         self.slot_18.setFixedWidth(180)
+        self.slot_18.setReadOnly(True)
         shbx.addWidget(self.slot_18)
         vbox_group_4.addLayout(shbx)
 
@@ -1245,8 +1249,10 @@ class Main(QMainWindow, QWidget):
         self.scripts_tool_title.setFocus()
 
         # Autologin.
-        self.credential_username.setText('system.gabriel.solano')
-        self.credential_password.setText('root')
+        # self.credential_username.setText('system.gabriel.solano')
+        # self.credential_password.setText('root')
+        self.credential_username.setText('p.castro')
+        self.credential_password.setText('123')
         self.check_credentials.click()
         # self.action_4_1.trigger()                 # Data load
         # self.action_3_2.trigger()                 # Dictionary settings
@@ -1378,6 +1384,9 @@ class Main(QMainWindow, QWidget):
             self._body.setCurrentIndex(2)
             Dashboard.clear_layouts(self)
             Dashboard.get_requests(self)
+
+            for btn in self.collected_request_btns:
+                btn.clicked.connect(self.clicked_request)
 
         elif _sender == ('&Registrar solicitud'):
             self.user_location.setText('PROCESAR SOLICITUD')
@@ -1629,7 +1638,10 @@ class Main(QMainWindow, QWidget):
         self.slot_10.calendarWidget().setSelectedDate(QDate.currentDate())
 
     def slots_crud(self):
-        print(self.sender().text())
+        sndr = self.sender().text()
+        if sndr == 'Actualizar':
+            Dashboard.run_update(self)
+            Dashboard.core(self)
 
     def date_selected(self):
         sel = self.slot_10.calendarWidget().selectedDate().toPyDate()
@@ -1683,6 +1695,11 @@ class Main(QMainWindow, QWidget):
     def attacht_new_file(self):
         # Attacthments.get_file(self)
         self.statusbar.showMessage('No configurado',3000)
+
+    def clicked_request(self):
+        self.active_request = self.sender().text()
+        Dashboard.get_number_req(self)
+        Dashboard.indicators(self)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

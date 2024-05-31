@@ -1,6 +1,6 @@
 import sqlite3
 
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QComboBox, QWidgetAction
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QComboBox
 from PyQt6.QtCore import Qt
 from datetime import datetime
 
